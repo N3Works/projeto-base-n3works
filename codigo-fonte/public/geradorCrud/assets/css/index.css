@@ -1,0 +1,64 @@
+.tab-content {
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: -1px;
+}
+
+.tabs-gerador {
+    padding-bottom: 20px;
+}
+
+.titulo {
+    color: #00b9cc;
+}
+
+.titulo_logo {
+    padding-top: 16px; 
+    text-align: right;
+}
+
+.titulo_img {
+    height: 40px;
+}
+
+.select2.has-error {
+    border-color: #a94442;
+}
+
+.required {
+    color: red;
+    font-weight: bold;
+}
+
+/*.modalLabels {
+    width: 1000px; 
+    margin: auto;
+}*/
+
+.listagemDeLabels {
+    margin-right: 15px;
+}
+
+.radio-icon {
+    padding-right: 4px;
+}
+
+.dropdown-selecionado {
+    color: #5cb85c;
+}
+
+.ajusteLabelDropdown {
+    padding-top: 8px !important;
+}
+
+.cadastrarDropDown {
+    display: none;
+}
+
+.removerOption {
+    display: none;
+}
