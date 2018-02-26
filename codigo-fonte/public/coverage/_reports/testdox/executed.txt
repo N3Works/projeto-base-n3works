@@ -1,0 +1,112 @@
+Comentarios
+ [x] Relacao users
+ [x] Consultar
+ [x] Consultar item
+
+Estudos
+ [x] Relacao grupos
+ [x] Get estudos grupo
+ [x] Get estudos grupo sem grupo
+ [x] Apagar estudos grupo
+ [x] Apagar estudos grupo nao existe
+
+Grupos
+ [x] Relacao itens
+ [x] Relacao uasgs
+ [x] Relacao estudos
+ [x] Relacao riscos
+
+HistoricoTramitacoes
+ [x] BuscarSituacoes Item
+ [x] BuscarSituacoes Atual
+ [x] BuscarSituacoes ShowCodigo
+ [x] Consultar
+ [x] Consultar sem item
+ [x] Buscar situacao por perfil se competente
+ [x] Buscar situacao por perfil nao competente
+ [x] Buscar situacao por perfil sem usuario
+
+Itens
+ [x] Relacao comentarios
+ [x] Relacao grupos
+ [x] Relacao planejamentos
+ [x] Relacao subitens
+ [x] Relacao historico tramitacoes
+ [x] Relacao planos anuais
+ [x] Consultar
+ [x] Consultar usuario competente
+ [x] Consultar planejamento
+ [x] Count itens grupo
+ [x] Count itens grupo parametro alternativo
+ [x] Get itens situacao atual
+ [x] Buscar dados plano
+ [x] Buscar dados plano em elaboracao
+ [x] Salvar planejamento grupo
+ [x] Salvar planejamento item
+ [x] Update itens
+ [x] Buscar situacoes usuario competente
+ [x] Buscar situacoes usuario competente false
+ [x] Verificar usuario e plano
+ [x] Verificar usuario e plano competente execucao
+ [x] Enviar para m p
+ [x] Enviar para m p em elaboracao na elaboracao
+ [x] Enviar para m p em elaboracao no ajuste
+ [x] Enviar para m p fora situacao com um item
+ [x] Enviar para m p fora situacao com mais de item
+ [x] Gerar botoes data tables
+ [x] Gerar botoes data tables em elaboracao
+ [x] Gerar botoes data tables usuario competente
+ [x] Gerar botoes data tables elaborado enviado m p user competente
+ [x] Gerar botoes data tables execucao enviado m p user competente
+ [x] Gerar botoes data tables elaborado emergencial
+ [x] Gerar botoes data tables em execucao usuario competente emergencial
+ [x] Gerar botoes data tables apenas item aprovado
+ [x] Verificar usuario autoridade competente
+ [x] Verificar usuario autoridade competente false
+ [x] Verificar usuario autoridade competente sem usuariop
+ [x] Validar dados obrigatorios vinculado a um grupo sem dados
+ [x] Validar dados obrigatorios vinculado a um planejamento
+ [x] Validar dados obrigatorios vinculado a um grupo com dados
+ [x] Get dados to xls
+ [x] Enviar para m p apos limite
+ [x] Verificar situacao plano anual
+
+ModelControl
+ [x] Set attributes
+ [x] Format attributes get data
+ [x] Format attributes save data
+ [x] Format attributes get dinheiro
+ [x] Format attributes save dinheiro
+
+Perfils
+ [x] Relacao users
+ [x] Relacao uasgs
+
+Planejamentos
+ [x] Relacao estudos
+ [x] Relacao riscos
+ [x] Relacao itens
+
+Riscos
+ [x] Relacao grupos
+ [x] Relacao planejamentos
+ [x] Get riscos
+ [x] Get riscos grupo desconhecido
+ [x] Pegar dados
+ [x] Apagar riscos grupo
+ [x] Apagar riscos grupo sem riscos
+
+PlanosAnuais
+ [x] Relacao itens
+ [x] Consultar
+ [x] Buscar situacao planos param 1
+ [x] Buscar situacao planos param 2
+ [x] Buscar situacao planos param 3
+ [x] Consultar data tables
+
+Siasg
+ [x] Consultar
+
+Uasgs
+ [x] Relacao perfils
+

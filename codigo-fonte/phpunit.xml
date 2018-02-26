@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="bootstrap/autoload.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Application Test Suite">
+            <file>tests/ComentariosTest.php</file>
+            <file>tests/EstudosTest.php</file>
+            <file>tests/GruposTest.php</file>
+            <file>tests/HistoricoTramitacoesTest.php</file>
+            <file>tests/ItensTest.php</file>
+            <file>tests/ModelControlTest.php</file>
+            <file>tests/PerfilsTest.php</file>
+            <file>tests/PlanejamentosTest.php</file>
+            <file>tests/RiscosTest.php</file>
+            <file>tests/PlanosAnuaisTest.php</file>
+            <file>tests/SiasgTest.php</file>
+            <file>tests/UasgsTest.php</file>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./app/Models</directory>
+            <exclude>
+                <file>ModelControl.php</file>
+            </exclude>
+        </whitelist>
+        <blacklist>
+            <exclude>
+                <file suffix=".php">./app/Models/ModelControl.php</file>
+            </exclude>
+        </blacklist>
+    </filter>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="CACHE_DRIVER" value="array"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="QUEUE_DRIVER" value="sync"/>
+    </php>
+    <logging> 
+        <log type="coverage-clover" target="public/coverage/_reports/logs/clover.xml"/> 
+        <log type="coverage-html" target="public/coverage/_reports/coverage" charset="UTF-8" yui="true" highlight="true" lowUpperBound="35" highLowerBound="70" /> 
+        <log type="testdox-text" target="public/coverage/_reports/testdox/executed.txt"/> 
+    </logging> 
+</phpunit>

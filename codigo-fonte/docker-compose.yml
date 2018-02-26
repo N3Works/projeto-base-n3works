@@ -1,0 +1,51 @@
+pb-db:
+  container_name: pb-db
+  image: mysql:5.5
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: pb-laravel
+  ports:
+    - "3366:3306"
+pb-www:
+  image: jointecnologia/laravel
+  container_name: pb-www
+  environment:
+    MYSQL_ROOT_USER: root
+    APP_ENV: local
+    APP_KEY: "base64:ui78kZOJLMtIoqOcw8TrYRUYHpdOTDeb2owgJm0m7kY="
+    APP_DEBUG: "true"
+    APP_LOG_LEVEL: debug
+    APP_URL: "http://localhost"
+    BROADCAST_DRIVER: "log"
+    CACHE_DRIVER: "file"
+    SESSION_DRIVER: "file"
+    QUEUE_DRIVER: "sync"
+    REDIS_HOST: "127.0.0.1"
+    REDIS_PASSWORD: "null"
+    REDIS_PORT: "6379"
+    MAIL_DRIVER: "smtp"
+    MAIL_HOST: "mailtrap.io"
+    MAIL_PORT: "2525"
+    MAIL_USERNAME: "null"
+    MAIL_PASSWORD: "null"
+    MAIL_ENCRYPTION: "null"
+    PUSHER_APP_ID: ""
+    PUSHER_KEY: ""
+    PUSHER_SECRET: ""
+    APISICONV_CLIENT: TvWs5ihx3tL0x20TcQ2ufI6iMePLrB
+    APISICONV_SECRET: JN9kgKu8K4hq5toxkVPfSFTQvwhLAj
+  volumes:
+    - .:/var/www/html
+  links:
+    - pb-db:db
+  ports:
+    - "86:80"
+crud:
+ container_name: laravel-crud
+ image: jointecnologia/laravel-crud
+ volumes_from:
+   - pb-www
+ links:
+   - pb-db:db
+ ports:
+   - "9090:80"
