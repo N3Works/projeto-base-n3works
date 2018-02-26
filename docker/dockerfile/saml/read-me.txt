@@ -1,0 +1,5 @@
+docker pull centos:6.8
+
+docker build -t mpog/saml:latest .
+
+docker run -it -p 80:80 --name saml mpog/saml:latest
