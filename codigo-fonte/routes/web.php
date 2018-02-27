@@ -19,3 +19,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 /* ------------------- ROTAS ALTERNATIVAS -------------------- */
 Route::any('/login', 'LoginController@loginUser');
+Route::any('/users/recuperarSenha', 'UsersController@recuperarSenha');
+Route::get('/manual', function () {
+    return view('manual.index');
+});

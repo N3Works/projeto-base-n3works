@@ -15,7 +15,7 @@ function entrarPlanoAnual() {
     var botaoHtml = $(this).html();
     
     if (!id_uasg) {
-        createFlashMesseger('Nenhuma Uasg foi selecionada.', '#flashMensager', false);
+        appUtil.createFlashMesseger('Nenhuma Uasg foi selecionada.', false);
         return;
     }
     

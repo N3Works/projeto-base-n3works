@@ -1,6 +1,5 @@
 @extends('layout.master')
 @section('conteudo')
-@include('layout.erros')
 
 <?php
 echo LayoutBuilder::gerarBreadCrumb(array(
@@ -24,57 +23,65 @@ echo LayoutBuilder::gerarBreadCrumb(array(
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <span class="caption-subject font-orange-sharp bold uppercase">Visualizar Menu</span>
+                    <span class="caption-subject font-sharp bold uppercase">Visualizar Menu</span>
                 </div>
             </div>
+            
+            @include('layout.erros')
+            
             <div class="portlet-body">
                 <div class="col-md-12">
                     <fieldset>
-                            <div class="col-sm-6">
-                                <div class="form-body">
-                                <label class="control-label">{{ $model->labels['header'] }} </label>
-                                    <div class="form-control">{{ $model->header }}</div>
-                                </div>
+                        <div class="col-sm-6">
+                            <div class="form-body">
+                            <label class="control-label">{{ $model->labels['header'] }} </label>
+                                <div class="form-control">{{ $model->header }}</div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-body">
-                                <label class="control-label">{{ $model->labels['controller'] }} </label>
-                                    <div class="form-control">{{ $model->controller }}</div>
-                                </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-body">
+                            <label class="control-label">{{ $model->labels['controller'] }} </label>
+                                <div class="form-control">{{ $model->controller }}</div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-body">
-                                <label class="control-label">{{ $model->labels['action'] }} </label>
-                                    <div class="form-control">{{ $model->action }}</div>
-                                </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-body">
+                            <label class="control-label">{{ $model->labels['action'] }} </label>
+                                <div class="form-control">{{ $model->action }}</div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-body">
-                                <label class="control-label">{{ $model->labels['icon'] }} </label>
-                                    <div class="form-control">{{ $model->icon }}</div>
-                                </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-body">
+                            <label class="control-label">{{ $model->labels['icon'] }} </label>
+                                <div class="form-control">{{ $model->icon }}</div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-body">
-                                <label class="control-label">{{ $model->labels['order'] }} </label>
-                                    <div class="form-control">{{ $model->order }}</div>
-                                </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-body">
+                            <label class="control-label">{{ $model->labels['order'] }} </label>
+                                <div class="form-control">{{ $model->order }}</div>
                             </div>
-                            <div class="col-sm-6">
-                                <?php 
-                                $parent = \App\Models\Menus::find($model->parent);
-                                $header = '';
-                               
-                                if ($parent) {
-                                    $header = $parent->header;
-                                }
-                                ?>
-                                <div class="form-body">
-                                <label class="control-label">{{ $model->labels['parent'] }} </label>
-                                    <div class="form-control">{{ $header }}</div>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <?php 
+                            $parent = \App\Models\Menus::find($model->parent);
+                            $header = '';
 
+                            if ($parent) {
+                                $header = $parent->header;
+                            }
+                            ?>
+                            <div class="form-body">
+                            <label class="control-label">{{ $model->labels['parent'] }} </label>
+                                <div class="form-control">{{ $header }}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-body">
+                            <label class="control-label">{{ $model->labels['permissao_id'] }} </label>
+                                <div class="form-control">{{ $model->permissao_id ? $model->Permissao->permissao : '' }}</div>
+                            </div>
+                        </div>
                     </fieldset>    
                 </div>
             </div>

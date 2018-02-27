@@ -23,19 +23,19 @@
                                 <div class="form-group">
                                     <label class="col-md-4 col-sm-4 control-label">CPF:</label>
                                     <div class="col-md-4 col-sm-4">
-                                        {{ Form::text('cpf', '', ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control maskCpf', 'placeholder' => 'Permissão']) }}
+                                        {{ Form::text('cpf', '', ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control maskCpf', 'placeholder' => '000.000.000-00']) }}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-4 col-sm-4 control-label">Nome:</label>
                                     <div class="col-md-4 col-sm-4">
-                                        {{ Form::text('nome', '', ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control', 'placeholder' => 'Permissão']) }}
+                                        {{ Form::text('nome', '', ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control', 'placeholder' => 'Nome']) }}
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-4 col-sm-4 control-label">E-mail:</label>
                                     <div class="col-md-4 col-sm-4">
-                                        {{ Form::text('email', '', ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control', 'placeholder' => 'Descrição']) }}
+                                        {{ Form::text('email', '', ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control', 'placeholder' => 'E-mail']) }}
                                     </div>
                                 </div>
                             </fieldset>
@@ -43,7 +43,7 @@
                     </div>
 
                     <div class="form-actions left">
-                        <button type="button" class="pesquisar_form btn sbold orange"><i class="fa fa-search"></i> Pesquisar</button>
+                        <button type="button" class="pesquisar_form btn sbold layoutBtnColor"><i class="fa fa-search"></i> Pesquisar</button>
                         <button type="button" id="limparFiltros" class="limpar btn btn-default"><i class="fa fa-eraser"></i> Limpar</button>
                     </div>
 

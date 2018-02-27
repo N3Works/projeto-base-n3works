@@ -1,0 +1,40 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 23/06/2017, 09:29:56
+    Author     : User
+*/
+.th-itens {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.th-itens-btn {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.inputDropdownValor {
+    padding-left: 12px !important;
+    padding-right: 25px !important;
+}
+
+.inputDropdownNome {
+    padding-left: 12px !important;
+    padding-right: 9px !important;
+}
+
+.linha-clone-item>td {
+    padding-bottom: 0px !important;
+}
+
+.cadastroLinhaDropDown {
+    margin-left: 19px !important;
+}
+
+.destroyTr {
+    margin-left: 30px !important;
+}

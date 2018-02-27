@@ -1,46 +1,71 @@
-<div class="page-header navbar navbar-fixed-top" >
-
-    <div class="page-header-inner ">
-        
-        <div class="menu-toggler sidebar-toggler menu-toggler-sidemenu"></div>
-        
-        <div class="page-logo keep-200">
-            <a href="#">
-                <h4 class="page-titulo" > {{$config->titulo_projeto}}</h4>
-            </a>
-        </div>
-
-        <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> </a>
-
-        <div class="page-top">
-            <div class="top-menu">
-                <ul class="nav navbar-nav pull-right">
-                    <li style="margin: 17px 0 15px 10px; padding: 0; float: left;">
-                        <a href="{{ url('default/index') }}"><i class='fa fa-home fa-2x'></i></a>
+@php $layoutSistema = app('AppConfig')->getParam('LAYOUT_SISTEMA'); @endphp
+@if ($layoutSistema == 'PORTAL_AZUL' || $layoutSistema == 'PORTAL_GOLD')
+    <div id="barra-brasil">
+        <div id="wrapper-barra-brasil">
+            <div class="brasil-flag">
+                <a href="http://brasil.gov.br" class="link-barra">Brasil</a>
+            </div>
+            <span class="acesso-info">
+                <a href="http://www.servicos.gov.br/?pk_campaign=barrabrasil" class="link-barra" id="barra-brasil-orgao">Serviços</a>
+            </span>
+            <nav>
+                <ul class="list">
+                    <li>
+                        <a href="#" id="menu-icon"></a>
                     </li>
-                    <li class="separator hide"> </li>
-                    <li style="margin: 17px 0 15px 10px; padding: 0; float: left;">
-                        <a href="{{ url('default/index') }}"><i class='fa fa-info-circle fa-2x'></i></a>
+                    <li class="list-item first">
+                        <a href="http://brasil.gov.br/barra#participe" class="link-barra">Participe</a>
                     </li>
-                    <li style="margin: 17px 0 15px 10px; padding: 0; float: left;">
-                        <a href="javascript:void(0)" class="dropdown-toggle top-header-menu" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false">
-                            <i class='fa fa-user fa-2x'></i><div class="page-header-top-icon"><i class="fa fa-sort-desc fa-2x"></i></div>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-default top-menu-user-custom">
-                            <?php if (Auth::check()) { ?>
-                                <li><p class="name-user">{{Auth::user()->nome}}</p></li>
-                                <li class="divider"> </li>
-                                <li>
-                                <a href="{{ url('login/logout') }}">
-                                <i class="icon-key"></i> Sair </a>
-                                </li>
-                            <?php } else { ?>
-                                <li><p style="font-size: 12px;" class="name-user">Nenhum Usuário logado no momento.</p></li>;
-                            <?php } ?>
-                        </ul>
+                    <li class="list-item">
+                        <a href="http://brasil.gov.br/barra#acesso-informacao" class="link-barra">Acesso à informação</a>
+                    </li>
+                    <li class="list-item">
+                        <a href="http://www.planalto.gov.br/legislacao" class="link-barra">Legislação</a>
+                    </li>
+                    <li class="list-item last last-item">
+                        <a href="http://brasil.gov.br/barra#orgaos-atuacao-canais" class="link-barra">Canais</a>
                     </li>
                 </ul>
-            </div>
+            </nav>
+            <a class="logo-vlibras" href="http://www.vlibras.gov.br/" aria-label="Acessível em Libras"></a>
         </div>
     </div>
-</div>
+    <div class="page-header navbar" >
+
+        <div class="page-header-inner">
+
+            <div class="menu-toggler sidebar-toggler menu-toggler-sidemenu"><i class="fa fa-navicon" style="color: white; font-size: 2.0em;"></i></div>
+
+            <div class="page-logo keep-200">            
+                <h4 class="page-titulo">{!! app('AppConfig')->getParam('CABECALHO_NOME_PROJETO') !!}</h4>
+                <h6 class="portal-description">{!! app('AppConfig')->getParam('CABECALHO_SUBTITULO') !!}</h6>
+            </div>
+
+            <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> </a>
+
+            @include('layout.topmenu')
+        </div>    
+        <div class="sobre"></div>
+    </div>
+
+@else
+    
+    <div class="page-header navbar navbar-fixed-top" >
+
+        <div class="page-header-inner ">
+
+            <div class="menu-toggler sidebar-toggler menu-toggler-sidemenu"></div>
+
+            <div class="page-logo keep-200">
+                <a href="#">
+                    <h4 class="page-titulo" > {!! app('AppConfig')->getParam('CABECALHO_NOME_PROJETO') !!}</h4>
+                </a>
+            </div>
+
+            <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> </a>
+
+            @include('layout.topmenu')
+        </div>
+    </div>
+    
+@endif

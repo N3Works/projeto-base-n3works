@@ -12,18 +12,19 @@ class PermissoesDataTable extends DataTable {
     public $model;
     
     //Monta lista de permissão com base nos usuários
-    public $permissaoUserList = false;
-    public $id_user;
+    public $permissaoPerfilList = false;
+    public $perfil_id;
     
     /**
      * Mostra a resposta em ajax
      * @return \Illuminate\Http\JsonResponse
      */
     public function ajax() {
+        
         return $this->datatables->of($this->model->consultar())
             ->addColumn('acoes', function ($query) {
                 
-                if (!$this->permissaoUserList) {
+                if (!$this->permissaoPerfilList) {
                     $columns['show'] = '<a  href="' . url('permissoes/show/' . $query->id) . '"><button class="btn btn-default"><i class="fa fa-search"></i></button></a>';
 
                     if (!$query->permanente) {
@@ -31,7 +32,7 @@ class PermissoesDataTable extends DataTable {
                         $columns['delete'] = '<a  href="#devNull" class="destroyTr" data-rel="'.$query->id.'" ><button class="btn btn-danger"><i class="fa fa-times"></i></button></a>';
                     }
                 } else {
-                    $permissao = \Illuminate\Support\Facades\DB::table('permissoes_users')->where(['user_id' => $this->id_user, 'permissao_id' => $query->id])->count();
+                    $permissao = \Illuminate\Support\Facades\DB::table('permissoes_perfis')->where(['perfil_id' => $this->perfil_id, 'permissao_id' => $query->id])->count();
                     
                     if (!$permissao) {
                         $columns['inativo'] = '<a href="javascript:void(0)" class="setarPermissao" data-rel="inativo" data-rel-id="'.$query->id.'"><i class="fa fa-square fa-2x"></i></a>';
@@ -70,7 +71,7 @@ class PermissoesDataTable extends DataTable {
         $model = new Permissoes();
         
         $styleWidth = 'width:15%;';
-        if ($this->permissaoUserList) {
+        if ($this->permissaoPerfilList) {
             $styleWidth = 'width:5%;';
         }
 

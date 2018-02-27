@@ -25,6 +25,7 @@ class Menus extends ModelControl {
         'icon',
         'parent',
         'order',
+        'permissao_id',
         'created_at',
         'updated_at',
     ];
@@ -41,6 +42,7 @@ class Menus extends ModelControl {
         'icon' => 'string',
         'parent' => 'integer',
         'order' => 'integer',
+        'permissao_id' => 'integer',
         'created_at' => 'data_tempo',
         'updated_at' => 'data_tempo',
     ];    
@@ -57,16 +59,25 @@ class Menus extends ModelControl {
         'icon' => 'Icon',
         'parent' => 'Menu Pai',
         'order' => 'Ordem',
+        'permissao_id' => 'Permissão',
         'created_at' => 'Data de criação',
         'updated_at' => 'Data de atualização',
     ];
+    
+    /*
+     * Busca o modelo de Permissoes
+     * @return object Permissoes
+     */
+    public function Permissao() {
+        return $this->hasOne('App\Models\Permissoes', 'id', 'permissao_id');
+    }
     
     /**
      * Realiza a consulta da tabela
      * @return array
      */
     public function consultar() {
-        $consulta = self::select('*')->orderBy('id', 'DESC');
+        $consulta = self::select('*')->orderByRaw(' parent ASC, \'order\' ASC');
         
         if ($this->header) {
             $consulta->where('header', 'like', '%'.$this->header.'%');

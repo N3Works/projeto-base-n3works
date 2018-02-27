@@ -19,15 +19,40 @@ class UsersDataTable extends DataTable {
     public function ajax() {
         return $this->datatables->of($this->model->consultar())
             ->addColumn('acoes', function ($query) {
-            return '<a  href="' . url('users/show/' . $query->id) . '"><button class="btn btn-default"><i class="fa fa-search"></i></button></a>
-                <a  href="' . url('users/form/' . $query->id) . '"><button class="btn btn-primary"><i class="fa fa-pencil"></i></button></a>
-                <a  href="#devNull" class="destroyTr" data-rel="'.$query->id.'" ><button class="btn btn-danger"><i class="fa fa-times"></i></button></a>';
+                $botoes = [
+                    'show' => '<a  href="' . url('users/show/' . $query->id) . '" title="Detalhe"><button class="btn btn-default"><i class="fa fa-search"></i></button></a>',
+                    'edit' => '<a  href="' . url('users/form/' . $query->id) . '" title="Editar" ><button class="btn btn-primary"><i class="fa fa-pencil"></i></button></a>',
+                    'perfil' => '',
+                    'delete' => '<a  href="#devNull" class="destroyTr" title="Excluir" data-rel="'.$query->id.'" ><button class="btn btn-danger"><i class="fa fa-times"></i></button></a>',
+                ];
+                
+                if (\Auth::user()->verificarPermissao('USERS_LISTAR_BTN_PERFIL')) {
+                    $botoes['perfil'] = '<a href="javascript:void(0)"
+                                            title="Alterar Perfil" 
+                                            class="showModalAlterarPerfil" 
+                                            data-rel-id="' . $query->id . '"
+                                            data-rel-perfil="' . $query->Perfil->id . '"
+                                            data-rel-nome="' . $query->nome . '"
+                                            ><button class="btn btn-primary"><i class="fa fa-user"></i></button></a>';
+                }
+                
+                if (\Auth::user()->id == $query->id) {
+                    unset($botoes['delete'], $botoes['perfil']);
+                }
+
+                return implode('', $botoes);
             })
             ->editColumn('updated_at', function($query) {
                 return Formatar::dateDbToAll($query->updated_at, 'BR');
             })
             ->editColumn('created_at', function($query) {
                 return Formatar::dateDbToAll($query->created_at, 'BR');
+            })
+            ->editColumn('perfil_id', function($query) {
+                return ($query->Perfil ? $query->Perfil->nome : '');
+            })
+            ->editColumn('cpf', function($query) {
+                return Formatar::mask($query->cpf, '###.###.###-##');
             })
             ->make(true);
     }
@@ -68,6 +93,10 @@ class UsersDataTable extends DataTable {
             [
                 'name' => 'email',
                 'title' => $model->labels['email'],
+            ],
+            [
+                'name' => 'perfil_id',
+                'title' => $model->labels['perfil_id'],
             ],
             [
                 'name' => 'created_at',

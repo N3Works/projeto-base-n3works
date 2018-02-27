@@ -1,6 +1,7 @@
 <?php
 date_default_timezone_set("America/Sao_Paulo");
 define('LARAVEL_START', microtime(true));
+ini_set('max_execution_time', 180);
 
 /*
 |--------------------------------------------------------------------------

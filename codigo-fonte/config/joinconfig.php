@@ -10,5 +10,5 @@ return [
     | Url da API para manutenção de usuário
     |
     */
-    'url_userapi' => 'http://138.197.66.183:82/',
+    'url_userapi' => 'http://localhost:82/',
 ];

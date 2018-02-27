@@ -1,6 +1,5 @@
 @extends('layout.master')
 @section('conteudo')
-@include('layout.erros')
 
 <?php
 echo LayoutBuilder::gerarBreadCrumb(array(
@@ -24,9 +23,12 @@ echo LayoutBuilder::gerarBreadCrumb(array(
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <span class="caption-subject font-orange-sharp bold uppercase"><?php echo ($model->id ? 'Atualizar': 'Cadastrar'); ?> Permissão</span>
+                    <span class="caption-subject font-sharp bold uppercase"><?php echo ($model->id ? 'Atualizar': 'Cadastrar'); ?> Permissão</span>
                 </div>
             </div>
+            
+            @include('layout.erros')
+            
             <div class="portlet-body form">
                 {{ Form::open(['id' => 'model_form', 'method' => 'post', 'url' => 'permissoes/save', 'class' => 'form-horizontal']) }}
                     <div class="form-body">

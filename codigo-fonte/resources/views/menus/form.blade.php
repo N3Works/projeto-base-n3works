@@ -1,14 +1,14 @@
 @extends('layout.master')
 @section('conteudo')
-@include('layout.erros')
 
-<?php
+@php
 echo LayoutBuilder::gerarBreadCrumb(array(
         'Início' => url('default/index'),
         'Lista de Menus' => url('menus/index'),
         'Cadastrar Menu',
     ));
-?>
+@endphp
+
 @if($errors->all())
     @foreach ($errors->keys() as $key)
         <?php
@@ -24,9 +24,12 @@ echo LayoutBuilder::gerarBreadCrumb(array(
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <span class="caption-subject font-orange-sharp bold uppercase"><?php echo ($model->id ? 'Atualizar': 'Cadastrar'); ?> Menu</span>
+                    <span class="caption-subject font-sharp bold uppercase"><?php echo ($model->id ? 'Atualizar': 'Cadastrar'); ?> Menu</span>
                 </div>
             </div>
+            
+            @include('layout.erros')
+            
             <div class="portlet-body form">
                 {{ Form::open(['id' => 'model_form', 'method' => 'post', 'url' => 'menus/save', 'class' => 'form-horizontal']) }}
                     <div class="form-body">
@@ -75,6 +78,12 @@ echo LayoutBuilder::gerarBreadCrumb(array(
                                 <div class="form-body {{$errors->first("parent", "has-error") }}">
                                 <label class="control-label">{{ $model->labels['parent'] }} <span class="request"> *</span></label>
                                     {{ Form::select('parent', $parent->pluck('header', 'id'), $model->parent, ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control select2', 'placeholder' => 'Selecione']) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-body {{$errors->first("permissao_id", "has-error") }}">
+                                <label class="control-label">{{ $model->labels['order'] }}</label>
+                                    {{ Form::select('permissao_id', \App\Models\Permissoes::pluck('permissao', 'id'), $model->permissao_id,['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control select2', 'placeholder' => 'Selecione']) }}
                                 </div>
                             </div>
                                                               

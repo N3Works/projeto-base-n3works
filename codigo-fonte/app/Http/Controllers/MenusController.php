@@ -45,7 +45,7 @@ class MenusController extends Controller {
      * @return Response
      */
     public function index(Request $request) {
-        $this->authorize('MENUS_LISTAR', 'Permissao');
+        $this->authorize('MENUS_LISTAR', 'PermissaoPolicy');
         
         $this->model->setAttributes($request->all());
         
@@ -84,6 +84,7 @@ class MenusController extends Controller {
         $model = $this->model;
         
         if ($id) {
+            $this->authorize('MENUS_EDITAR', 'PermissaoPolicy');
             $model = $this->model->find($id);
             $model->formatAttributes('get');
 
@@ -91,6 +92,8 @@ class MenusController extends Controller {
                 $this->setMessage('O Menu não foi encontrado', 'danger');
                 return redirect(url('menus/index'));
             }
+        } else {
+            $this->authorize('MENUS_CADASTRAR', 'PermissaoPolicy');
         }
         
         return view('menus.form', array(
@@ -135,6 +138,7 @@ class MenusController extends Controller {
      * @return Response
      */
     public function show($id) {
+        $this->authorize('MENUS_DETALHAR', 'PermissaoPolicy');
         $model = Menus::find($id);
         $model->formatAttributes('get');
         

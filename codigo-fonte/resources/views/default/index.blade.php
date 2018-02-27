@@ -27,7 +27,7 @@ echo LayoutBuilder::gerarBreadCrumb(array(
                     <div class="portlet-body">
                         <div class="portlet-title">
                             <div class="caption">
-                                <span class="caption-subject font-orange-sharp bold uppercase">Seja bem vindo <?php echo Auth::user()->nome; ?>! </span>
+                                <span class="caption-subject font-sharp bold uppercase">Seja bem vindo <?php echo Auth::user()->nome; ?>! </span>
                             </div>
                         </div>
                     </div>

@@ -147,11 +147,13 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        Collective\Html\HtmlServiceProvider::class,
+        App\Services\Html\HtmlServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
+
 
         /*
          * Package Service Providers...
@@ -219,9 +221,12 @@ return [
         'RouteBuilder' => App\Http\Helper\RouteBuilder::class,
         'LayoutBuilder' => App\Http\Helper\LayoutBuilder::class,
         'Formatar' => App\Http\Helper\Formatar::class,
+        'Validate' => App\Http\Helper\Validate::class,
         'Datatables' => Yajra\Datatables\Facades\Datatables::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'ModelPolicy' => App\Models\ModelPolicy::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'SendMail' => App\Http\Helper\SendMail::class,
     ],
 ];

@@ -43,10 +43,29 @@ class Handler extends ExceptionHandler
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception) {
-        if ($exception->getMessage() == 'This action is unauthorized.') {
-            return \Response::view('errors.error', ['message' => 'Ação não autorizada.']);
-        }
+        
+        /**
+         * Tratamendo para caso de ação negada, Por hora é pegando a mensagem.
+         */
+
         return parent::render($request, $exception);
+    }
+
+    protected function convertExceptionToResponse(Exception $exception)
+    {
+        if (config('app.debug')) {
+            $whoops = new \Whoops\Run;
+            $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+
+            return response()->make(
+                $whoops->handleException($exception),
+                method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 500,
+                method_exists($exception, 'getHeaders') ? $exception->getHeaders() : []
+            );
+        } else {
+            $content = parent::convertExceptionToResponse($exception)->getStatusCode();
+            return \Response::view('errors.' . $content);
+        }
     }
 
     /**

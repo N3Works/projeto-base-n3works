@@ -2,7 +2,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>{{$config->titulo_projeto}}</title>
+<title>{!! app('AppConfig')->getParam('CABECALHO_NOME_PROJETO') !!}</title>
 
  <!--Core do processo dos includes--> 
 <link href="{{ asset('template/global/plugins/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" >
@@ -18,6 +18,9 @@
 <link href="{{ asset('template/global/plugins/jqvmap/jqvmap/jqvmap.css') }}" rel="stylesheet" type="text/css" >        
 <link href="{{ asset('template/global/plugins/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" >        
 <link href="{{ asset('template/global/plugins/select2/css/select2-bootstrap.min.css') }}" rel="stylesheet" type="text/css" >        
+<link href="{{ asset('template/global/plugins/icheck/skins/all.css') }}" rel="stylesheet" type="text/css" >
+<link href="{{ asset('template/global/plugins/jquery-file-upload/css/jquery.fileupload.css') }}" rel="stylesheet" type="text/css" >
+<link href="{{ asset('template/global/plugins/bootstrap-touchspin/bootstrap.touchspin.css') }}" rel="stylesheet" type="text/css" >
 
  <!--Estilo do tema global--> 
 <link href="{{ asset('template/global/css/components.min.css') }}" rel="stylesheet" type="text/css" >
@@ -30,3 +33,11 @@
 <link href="{{ asset('template/layouts/layout4/css/custom.min.css') }}" rel="stylesheet" type="text/css" >
 
 {!!Html::style('resources/assets/css/custom-app.css')!!}
+
+<?php //Validação do parâmetro para selecionar layout do sistema.
+if (app('AppConfig')->getParam('LAYOUT_SISTEMA') == 'PORTAL_AZUL') {
+    echo Html::style('resources/assets/css/layoutPortal-azul.css');
+} else if (app('AppConfig')->getParam('LAYOUT_SISTEMA') == 'PORTAL_GOLD') {
+    echo Html::style('resources/assets/css/layoutPortal-gold.css');
+}
+?>

@@ -37,7 +37,7 @@
                     </div>
 
                     <div class="form-actions left">
-                        <button type="button" class="pesquisar_form btn sbold orange"><i class="fa fa-search"></i> Pesquisar</button>
+                        <button type="button" class="pesquisar_form btn sbold layoutBtnColor"><i class="fa fa-search"></i> Pesquisar</button>
                         <button type="button" id="limparFiltros" class="limpar btn btn-default"><i class="fa fa-eraser"></i> Limpar</button>
                     </div>
 

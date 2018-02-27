@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Listeners;
 
 use App\Events\Handlers\SetConfigSistem;
@@ -37,6 +36,7 @@ class SetConfigSistemListener {
             'controller_url' => asset('/') . $_SESSION['CONTROLLER'],
             'key' => $_SESSION['KEY'],
             'token' => csrf_token(),
+            'resultados_datatable' => app('AppConfig')->getParam('RESULTADOS_DATATABLE'),
         ]);    
     }
 }

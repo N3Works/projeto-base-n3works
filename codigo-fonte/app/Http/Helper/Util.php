@@ -14,6 +14,12 @@ class Util {
     public static $messages = array();
     
     /**
+     * Guarda todos caracteres válidos para gerar um código
+     * @var string 
+     */
+    public static $all_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+    /**
      * Popula a array de mensagens
      * @param string $message Texto da mensagem
      * @param string $status Tipo de situação da mensagem
@@ -103,17 +109,16 @@ class Util {
     }
     
     /**
-     * Verificar permissionamento
-     * @param string $permissao
-     * @return boolean
+     * Gerador de código com caracteres aleatórios
+     * @param integer $totalChar
+     * @return string
      */
-    public static function verificarPermissao($permissao) {
-        $sessao = app('session.store');
-        $permissoes = $sessao->get('permissoes');
-        
-        if (in_array($permissao, $permissoes)) {
-            return true;
+    public static function gerarCodigo($totalChar = 10) {
+        $characters = self::$all_chars;
+        $randPassword = '';
+        for ($i = 0; $i < $totalChar; $i++) {
+            $randPassword .= $characters[rand(0, strlen($characters)-1)];
         }
-        return false;
+        return $randPassword;
     }
 }

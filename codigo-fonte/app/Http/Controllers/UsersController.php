@@ -1,6 +1,5 @@
 <?php
 /* @var Controller $this */
-
 namespace App\Http\Controllers;
 
 //Base do controlador
@@ -11,14 +10,10 @@ use App\DataTables\UsersDataTable as DataTable;
 use Response;
 
 //Modelo da controller
-use App\User; 
-
-//Classes de regra de negócio
-use App\Models\Permissoes;
-use App\DataTables\PermissoesDataTable;
+use App\User;
 
 /**
- * Controlador dos Planos anuais
+ * Controlador dos Usuários
  * @author Thiago Farias <thiago.farias@jointecnologia.com.br>
  */
 class UsersController extends Controller {
@@ -34,18 +29,12 @@ class UsersController extends Controller {
     protected $dataTable;
     
     /**
-     * @var PermissoesDataTable
-     */
-    protected $permissoesDataTable;
-    
-    /**
      * UsersController constructor.
      * @param Users $users
      */
-    public function __construct(User $users, DataTable $dataTable, PermissoesDataTable $dataTablePermissoes) {
+    public function __construct(User $users, DataTable $dataTable) {
         $this->model = $users;
         $this->dataTable = $dataTable;
-        $this->permissoesDataTable = $dataTablePermissoes;
     }
     
     /**
@@ -54,6 +43,8 @@ class UsersController extends Controller {
      * @return Response
      */
     public function index(Request $request) {
+        $this->authorize('USERS_LISTAR', 'PermissaoPolicy');
+        
         $this->model->fill($request->all());
         
         if (app('request')->isXmlHttpRequest()) {
@@ -62,6 +53,7 @@ class UsersController extends Controller {
         }
         
         return view('users.index', array(
+            'perfis' => \App\Models\Perfis::pluck('nome', 'id'),
             'model' => $this->model->get(),
             'dataTable' => $this->dataTable->html(),
         ));
@@ -82,18 +74,21 @@ class UsersController extends Controller {
      * @return Response
      */
     public function form(Request $request) {
+        
         $id = $request->route('id');
         $this->model->fill($request->all());
         
         $model = $this->model;
-        
         if ($id) {
+            $this->authorize('USERS_EDITAR', 'PermissaoPolicy');
             $model = $this->model->find($id);
 
             if (!$model) {
                 $this->setMessage('O Usuário não foi encontrado', 'danger');
                 return redirect(url('users/index'));
             }
+        } else {
+            $this->authorize('USERS_CADASTRAR', 'PermissaoPolicy');
         }
         
         return view('users.form', array(
@@ -108,7 +103,7 @@ class UsersController extends Controller {
      */
     public function save(UsersFormRequest $request) {
         $this->model->fill($request->all());
-        
+        $this->model->cpf = preg_replace('/\D/', '', $this->model->cpf);
         if (!empty($this->model->id)) {
             $alterar = $this->model->find($this->model->id);
             
@@ -132,18 +127,20 @@ class UsersController extends Controller {
      * @return Response
      */
     public function show($id) {
+        
+        if (!\Auth::check() || (\Auth::check() && \Auth::user()->id != $id)) {
+            $this->authorize('USERS_DETALHAR', 'PermissaoPolicy');
+        }
+        
         $model = User::find($id);
         
         if (!$model) {
             $this->setMessage('O Usuário não foi encontrado', 'danger');
             return redirect(url('users/index'));
         }
-        $dataTable = $this->permissoesDataTable;
-        $dataTable->permissaoUserList = true;
         
         return view('users.show', [
             'model' => $model,
-            'dataTable' => $dataTable->html(),
         ]);
     }
 
@@ -164,18 +161,78 @@ class UsersController extends Controller {
     }
     
     /**
-     * Retorna a lista de permissões disponiveis
-     * @return type
+     * Ação de destruir/excluir um Usuário
+     * @param object $request
+     * @return Response::json
      */
-    public function listarPermissoes(Request $request) {
-        $permissoes = new Permissoes();
+    public function alterarPerfil(Request $request) {
         $data = $request->all();
-        $permissoes->fill($data);
-       
-        $this->permissoesDataTable->model = $permissoes;
-        $this->permissoesDataTable->permissaoUserList = true;
-        $this->permissoesDataTable->id_user = $data['id_user'];
+        $status = true;
+        $message = 'O perfil do usuário foi alterado com sucesso!';
         
-        return $this->permissoesDataTable->ajax();
+        
+        if (!$this->model->find($data['user_id'])->update(['perfil_id' => $data['perfil_id']])) {
+            $status = false;
+            $message = 'Houve um problema ao alterar o perfil';
+        }
+        
+        return Response::json(array(
+            'status' => $status,
+            'message' => $message,
+        ));
+    }
+    
+    /**
+     * Troca a senha do usuário
+     * @return view
+     */
+    public function trocarSenha(Request $request) {
+        $dados = $request->all();
+        $id_user = $request->route('id');
+        
+        if ($id_user != \Auth::user()->id) {
+            $this->authorize('USERS_TROCAR_SENHA', 'PermissaoPolicy');
+        }
+
+        if (!$id_user) {
+            $this->setMessage('Não foi passado nenhum identificador do usuário.', 'danger');
+            return redirect(url('/'));
+        }
+        
+        $model = $this->model->find($id_user);
+        
+        if (!empty($dados)) {
+            $model->fill($dados);
+            
+            $retorno = $model->trocarSenha();
+            $this->setMessage($retorno['mensagem'], $retorno['tipo']);
+            if ($retorno['tipo'] == 'success') {
+                return redirect(url('/'));
+            }
+        }
+        
+        return view('users.trocar-senha', ['model' => $model]);
+    }
+    
+    /**
+     * Recupera a senha do usuário criando uma nova e enviando para e-mail
+     * @return view
+     */
+    public function recuperarSenha(Request $request) {
+        $dados = $request->all();
+        $email = '';
+        
+        if (!empty($dados)) {
+            $model = $this->model->fill($dados);
+            
+            $retorno = $model->recuperarSenha();
+            $this->setMessage($retorno['mensagem'], $retorno['tipo']);
+            if ($retorno['tipo'] == 'success') {
+                return redirect(url('/login'));
+            }
+            $email = $model->email;
+        }
+        
+        return view('users.recuperar-senha', ['email' => $email]);
     }
 }

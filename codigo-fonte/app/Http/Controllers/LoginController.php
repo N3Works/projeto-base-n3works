@@ -54,7 +54,7 @@ class LoginController extends Controller {
             
             if ($userData) {
                 Auth::loginUsingId($userData->id);
-                \App\Models\PermissoesUsers::setar(); //Seta as permissões do usuário
+                \App\Models\PermissoesPerfis::setar(); //Seta as permissões do usuário
                 return redirect($this->redirectTo);
             } else {
                 $this->setMessage('Usuário ou senha inválido.', 'danger');

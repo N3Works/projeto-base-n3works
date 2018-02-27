@@ -6,19 +6,7 @@ namespace App\Http\Helper;
  * @author Thiago Farias <thiago.farias@jointecnologia.com.br>
  */
 class AppConfig {
-    
-    /**
-     * Monta o titulo do projeto
-     * @var string 
-     */
-    public $titulo_projeto = 'Projetos Base';
-    
-    /**
-     * Monta o titulo do projeto
-     * @var string 
-     */
-    public $texto_rodape = '&lt;Nome da Secretaria responsavel pelo Sistema&gt;-&lt;Sigla da Secretaria&gt;-&lt;Nome do Ministério&gt; | &lt;Endereco&gt;';
-    
+  
     /**
      * Cria a array de menus do projeto
      * @var type 
@@ -35,5 +23,19 @@ class AppConfig {
             $session->set('menus', \App\Models\Menus::gerarMenu());
         }
         return LayoutBuilder::montarHtmlMenus($session->get('menus'));
+    }
+    
+    /**
+     * Busca o valor do parâmetro passado
+     * @param string $param Nome do parâmetro
+     * @return string Valor do parâmetro
+     */
+    public function getParam($param) {
+        $parametro = \App\Models\Parametros::where('nome', $param);
+        if ($parametro->count() > 0) {
+            return $parametro->first()->valor;
+        } else {
+            return '';
+        }
     }
 }

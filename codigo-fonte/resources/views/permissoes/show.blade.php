@@ -1,6 +1,5 @@
 @extends('layout.master')
 @section('conteudo')
-@include('layout.erros')
 
 <?php
 echo LayoutBuilder::gerarBreadCrumb(array(
@@ -24,25 +23,27 @@ echo LayoutBuilder::gerarBreadCrumb(array(
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <span class="caption-subject font-orange-sharp bold uppercase">Visualizar Permissão</span>
+                    <span class="caption-subject font-sharp bold uppercase">Visualizar Permissão</span>
                 </div>
             </div>
+            
+            @include('layout.erros')
+            
             <div class="portlet-body">
                 <div class="col-md-12">
                     <fieldset>
-                            <div class="col-sm-6">
-                                <div class="form-body">
-                                <label class="control-label">{{ $model->labels['permissao'] }} </label>
-                                    <div class="form-control">{{ $model->permissao }}</div>
-                                </div>
+                        <div class="col-sm-6">
+                            <div class="form-body">
+                            <label class="control-label">{{ $model->labels['permissao'] }} </label>
+                                <div class="form-control">{{ $model->permissao }}</div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-body">
-                                <label class="control-label">{{ $model->labels['descricao'] }} </label>
-                                    <div class="form-control">{{ $model->descricao }}</div>
-                                </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-body">
+                            <label class="control-label">{{ $model->labels['descricao'] }} </label>
+                                <div class="form-control">{{ $model->descricao }}</div>
                             </div>
-
+                        </div>
                     </fieldset>    
                 </div>
             </div>

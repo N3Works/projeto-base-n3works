@@ -13,12 +13,12 @@ $(document).ready(function() {
 function destroyTr() {
     var id = $(this).attr('data-rel');
     
-    confirmBox('Deseja realmente excluir este Permissão?', function(retorno) {
+    appUtil.confirmBox('Deseja realmente excluir este Permissão?', function(retorno) {
         if (retorno) {
             $.ajax({
                 url: APP.controller_url + '/destroy/'+id
             }).done(function(data) {
-                createFlashMesseger(data.msg, '#flashMensager', data.success);
+                appUtil.createFlashMesseger(data.msg, data.success);
                 oTable.draw();
             });
         } 
@@ -31,9 +31,6 @@ function destroyTr() {
  */
 function configTable() {
     return $('#data_table').DataTable({
-        dom: "<'row'<'col-xs-12'<'col-xs-6'l><'col-xs-6'p>>r>" +
-             "<'row'<'col-xs-12't>>" +
-             "<'row'<'col-xs-12'<'col-xs-6'i><'col-xs-6'p>>>",
         ajax: {
             url: APP.controller_url + '/index',
             data: function (data) {
@@ -41,10 +38,6 @@ function configTable() {
                 data.descricao = $('select[name=descricao]').val();
             }
         },
-        language: {
-            processing: "Carregando"
-        },
-        processing: true,
         columns: [
             {data: 'permissao', name: 'permissao'},
             {data: 'descricao', name: 'descricao'},

@@ -1,17 +1,20 @@
-pb-db:
-  container_name: pb-db
+pbl-n3works-db:
+  container_name: n3works-db
   image: mysql:5.5
   environment:
     MYSQL_ROOT_PASSWORD: root
     MYSQL_DATABASE: pb-laravel
   ports:
     - "3366:3306"
-pb-www:
-  image: jointecnologia/laravel
-  container_name: pb-www
+pbl-n3works-www:
+  image: n3works/projeto-base:latest
+  container_name: n3works-www
   environment:
+    REDIRECT_HTTPS: "false"
+    DEBUGBAR_ENABLED: "true"
     MYSQL_ROOT_USER: root
     APP_ENV: local
+    APP_VERSION: 4.0
     APP_KEY: "base64:ui78kZOJLMtIoqOcw8TrYRUYHpdOTDeb2owgJm0m7kY="
     APP_DEBUG: "true"
     APP_LOG_LEVEL: debug
@@ -37,15 +40,15 @@ pb-www:
   volumes:
     - .:/var/www/html
   links:
-    - pb-db:db
+    - pbl-n3works-db:db
   ports:
     - "86:80"
-crud:
- container_name: laravel-crud
- image: jointecnologia/laravel-crud
- volumes_from:
-   - pb-www
- links:
-   - pb-db:db
- ports:
-   - "9090:80"
+#crud:
+# container_name: laravel-crud
+# image: jointecnologia/laravel-crud
+# volumes_from:
+#   - pb-www
+# links:
+#   - pbl-n3works-db:db
+# ports:
+#   - "9090:80"

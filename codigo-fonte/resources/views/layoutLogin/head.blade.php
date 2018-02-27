@@ -2,7 +2,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>{{$config->titulo_projeto}}</title>
+<title>{!! app('AppConfig')->getParam('CABECALHO_NOME_PROJETO') !!}</title>
 
  <!--Core do processo dos includes--> 
 <link href="{{ asset('template/global/plugins/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" >
@@ -22,5 +22,13 @@
 <link href="{{ asset('template/pages/css/login.min.css') }}" rel="stylesheet" type="text/css" >
 
 <link href="{{ asset('template/layouts/layout4/css/custom.min.css') }}" rel="stylesheet" type="text/css" >
+
+<?php 
+if (app('AppConfig')->getParam('LAYOUT_SISTEMA') == 'PORTAL_AZUL') {
+    echo Html::style('resources/assets/css/layoutLoginPortal-azul.css');
+} else if (app('AppConfig')->getParam('LAYOUT_SISTEMA') == 'PORTAL_GOLD') {
+    echo Html::style('resources/assets/css/layoutLoginPortal-gold.css');
+}
+?>
 
 {!!Html::style('resources/assets/css/custom-app.css')!!}

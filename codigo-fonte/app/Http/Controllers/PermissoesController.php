@@ -14,7 +14,7 @@ use Response;
 use App\Models\Permissoes; 
 
 //Seta models referenciadas
-use App\Models\PermissoesUsers;
+use App\Models\PermissoesPerfis;
 
 /**
  * Controlador dos Planos anuais
@@ -47,6 +47,8 @@ class PermissoesController extends Controller {
      * @return Response
      */
     public function index(Request $request) {
+        $this->authorize('PERMISSOES_LISTAR', 'PermissaoPolicy');
+        
         $this->model->fill($request->all());
         
         if (app('request')->isXmlHttpRequest()) {
@@ -75,12 +77,14 @@ class PermissoesController extends Controller {
      * @return Response
      */
     public function form(Request $request) {
+        
         $id = $request->route('id');
         $this->model->fill($request->all());
         
         $model = $this->model;
         
         if ($id) {
+            $this->authorize('PERMISSOES_EDITAR', 'PermissaoPolicy');
             $model = $this->model->find($id);
             $model->formatAttributes('get');
 
@@ -88,6 +92,8 @@ class PermissoesController extends Controller {
                 $this->setMessage('O Permissão não foi encontrado', 'danger');
                 return redirect(url('permissoes/index'));
             }
+        } else {
+            $this->authorize('PERMISSOES_CADASTRAR', 'PermissaoPolicy');
         }
         
         return view('permissoes.form', array(
@@ -127,6 +133,7 @@ class PermissoesController extends Controller {
      * @return Response
      */
     public function show($id) {
+        $this->authorize('PERMISSOES_DETALHAR', 'PermissaoPolicy');
         $model = Permissoes::find($id);
         $model->formatAttributes('get');
         
@@ -158,7 +165,7 @@ class PermissoesController extends Controller {
      * @param Request $request
      */
     public function atribuirPermissao(Request $request) {
-        $model = new PermissoesUsers();
+        $model = new PermissoesPerfis();
         $dados = $request->all();
         return Response::json(array(
             'success' => true,

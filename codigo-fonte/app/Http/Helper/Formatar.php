@@ -10,6 +10,39 @@ use Carbon\Carbon;
  */
 class Formatar {
     
+	/**
+     * DateTime formatar nomeclatura ( Dias da semana )
+     * @var array 
+     */
+    public static $semana = [
+        'Sun' => 'Domingo', 
+        'Mon' => 'Segunda-Feira',
+        'Tue' => 'Terca-Feira',
+        'Wed' => 'Quarta-Feira',
+        'Thu' => 'Quinta-Feira',
+        'Fri' => 'Sexta-Feira',
+        'Sat' => 'Sábado'
+    ];
+    
+    /**
+     * DateTime formatar nomeclatura ( Meses )
+     * @var array 
+     */
+    public static $mes_extenso = [
+        'Jan' => 'Janeiro',
+        'Feb' => 'Fevereiro',
+        'Mar' => 'Marco',
+        'Apr' => 'Abril',
+        'May' => 'Maio',
+        'Jun' => 'Junho',
+        'Jul' => 'Julho',
+        'Aug' => 'Agosto',
+        'Nov' => 'Novembro',
+        'Sep' => 'Setembro',
+        'Oct' => 'Outubro',
+        'Dec' => 'Dezembro'
+    ];
+	
     /**
      * Formata numero
      * @param string  $number         Numero a ser formatado
@@ -124,4 +157,30 @@ class Formatar {
         return ($carbon->timestamp > 0) ?  $carbon->format($output) : '';
     }
     
+    /**
+     * Formata bytes conforme tamanhos
+     * @param integer $bytes
+     * @param integer $precision
+     * @return string
+     */
+    public static function formatBytes($bytes, $precision = 2) { 
+        $unidades = ['B', 'KB', 'MB', 'GB', 'TB']; 
+
+        $bytes = max($bytes, 0); 
+        $rest = floor(($bytes ? log($bytes) : 0) / log(1024)); 
+        $rest = min($rest, count($unidades) - 1); 
+
+        return round($bytes, $precision) . ' ' . $unidades[$rest]; 
+    } 
+    
+    /**
+     * Formata bytes conforme tamanhos
+     * @param integer $tamanho
+     * @return string
+     */
+    public static function bytes($tamanho) {
+        $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+        $power = $tamanho > 0 ? floor(log($tamanho, 1024)) : 0;
+        return number_format($tamanho / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
+    }
 }

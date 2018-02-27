@@ -26,6 +26,10 @@ class LayoutBuilder {
             $menu = $menus[$id];
             
             list($active, $open) = self::validarMenusAtivos($menu);
+            if (!self::validarMenuPermissao($menu)) {
+                continue;
+            }
+            
             $menu['key'] = array_key_exists('key', $menu) ? $menu['key'] : '';
             $html .= '<ul class="page-sidebar-menu page-sidebar-menu-closed" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">';
             $url = (isset($menu['controller']) && isset($menu['action']) ? url($menu['controller'].'/'.$menu['action'], ['id' => $menu['key']]) : 'javascript:void(0)');
@@ -46,7 +50,8 @@ class LayoutBuilder {
                         </a>';
             
             if (!empty($menu['child'])) {
-            
+                $childsOrder = [];
+                
                 foreach ($menu['child'] as $child) {
                     $childsOrder[$child['id']] = $child['order'];
                 }
@@ -55,11 +60,17 @@ class LayoutBuilder {
                 
                 $html .= '<ul class="sub-menu">';
                 
-                foreach ($childsOrder as $id => $order) {
-                    $child = $menu['child'][$id];
+                foreach ($childsOrder as $idChild => $order) {
+                    
+                    $child = $menu['child'][$idChild];
                     
                     $child['key'] = array_key_exists('key', $child) ? $child['key'] : '';
+                    
                     list($activeChild, $open) = self::validarMenusAtivos($child, $menu['controller']);
+                    if (!self::validarMenuPermissao($child)) {
+                        continue;
+                    }
+                    
                     $urlChild = 'javascript:void(0)';
                     $htmlOptions = '';
                     
@@ -136,13 +147,26 @@ class LayoutBuilder {
     }
     
     /**
+     * Valida a permissao do menu ( Se deve mostrar ou não o menu )
+     * @param array $menu
+     * @return boolean
+     */
+    public static function validarMenuPermissao($menu) {
+        if (!empty($menu['permissao_id'])) {
+            $permissao_menu = \App\Models\Permissoes::find($menu['permissao_id'])->permissao;
+            return \Auth::user()->verificarPermissao($permissao_menu);
+        }
+        return true;
+    }
+    
+    /**
      * Gera o breadcrumb conforme passado por parãmetro
      * @param array $breadConfig
      * @return string
      */
     public static function gerarBreadCrumb($breadConfig = array()) {
         $html = '<ul class="page-breadcrumb breadcrumb">';
-        $html .= '<li><b style="color: #FF6600;" >Você está aqui: &nbsp;</b></li>';
+        $html .= '<li><b class="font-sharp" >Você está aqui: &nbsp;</b></li>';
         
         $count = 1;
         foreach ($breadConfig as $text => $url) {
@@ -164,7 +188,7 @@ class LayoutBuilder {
 //        $session = $session = app('session.store');
 //        $time = ($session->get('tempo_sessao') > 0) ? $session->get('tempo_sessao') - time() : 0;
 //        '.$time.' ---- 
-        $html .= '<span class="sessaoMessage">Sua sessão expira em <span class="sessaoTime">00:40:00</span></span></ul>';
+        $html .= '</span></ul>';
         
         return $html;
     }

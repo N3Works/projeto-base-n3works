@@ -45,11 +45,11 @@ class Permissoes extends ModelControl {
     ];
     
     /*
-     * Busca o modelo de Users
-     * @return object Users
+     * Busca o modelo de perfis
+     * @return object perfis
     */
-    public function Users() {
-        return $this->belongsToMany('App\User', 'permissoes_users', 'permissao_id', 'user_id');
+    public function Perfis() {
+        return $this->belongsToMany('App\Models\Perfis', 'permissoes_perfis', 'permissao_id', 'perfil_id');
     }
 
     /**
@@ -57,7 +57,7 @@ class Permissoes extends ModelControl {
      * @return array
      */
     public function consultar() {
-        $consulta = self::select('*')->orderBy('id', 'DESC');
+        $consulta = self::select('*')->orderBy('permissao', 'ASC');
         
         if ($this->permissao) {
             $consulta->where('permissao', 'like', '%'.$this->permissao.'%');

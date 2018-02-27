@@ -14,16 +14,15 @@ echo LayoutBuilder::gerarBreadCrumb(array(
 <div class="clearfix"></div>
 
 <div class="row">
-    <div class="col-md-12">
-        
-        <?php echo Util::showMessage(); ?>        
+    <div class="col-md-12">    
         <div class="portlet light bordered">
-            
             <div class="portlet-title">
                 <div class="caption">
-                    <span class="caption-subject font-orange-sharp bold uppercase">Listar Permissão</span>
+                    <span class="caption-subject font-sharp bold uppercase">Listar Permissão</span>
                 </div>
             </div>
+            
+            @include('layout.erros')
             
             @include('permissoes.index.search')
 

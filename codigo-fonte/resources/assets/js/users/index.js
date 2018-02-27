@@ -4,6 +4,8 @@ $(document).ready(function() {
     $(document).on('click', '.destroyTr', destroyTr);
     $('.pesquisar_form').on('click', onSearchForm);
     $('#limparFiltros').on('click', onResetForm);
+    $(document).on('click', '.showModalAlterarPerfil', showModalAlterarPerfil);
+    $(document).on('change', '.perfil_id', alterarPerfil);
 });
 
 /**
@@ -13,12 +15,12 @@ $(document).ready(function() {
 function destroyTr() {
     var id = $(this).attr('data-rel');
     
-    confirmBox('Deseja realmente excluir este Usuário?', function(retorno) {
+    appUtil.confirmBox('Deseja realmente excluir este Usuário?', function(retorno) {
         if (retorno) {
             $.ajax({
                 url: APP.controller_url + '/destroy/'+id
             }).done(function(data) {
-                createFlashMesseger(data.msg, '#flashMensager', data.success);
+                appUtil.createFlashMesseger(data.msg, data.success);
                 oTable.draw();
             });
         } 
@@ -31,9 +33,6 @@ function destroyTr() {
  */
 function configTable() {
     return $('#data_table').DataTable({
-        dom: "<'row'<'col-xs-12'<'col-xs-6'l><'col-xs-6'p>>r>" +
-             "<'row'<'col-xs-12't>>" +
-             "<'row'<'col-xs-12'<'col-xs-6'i><'col-xs-6'p>>>",
         ajax: {
             url: APP.controller_url + '/index',
             data: function (data) {
@@ -42,14 +41,11 @@ function configTable() {
                 data.email = $('select[name=email]').val();
             }
         },
-        language: {
-            processing: "Carregando"
-        },
-        processing: true,
         columns: [
             {data: 'cpf', name: 'cpf'},
             {data: 'nome', name: 'nome'},
             {data: 'email', name: 'email'},
+            {data: 'perfil_id', name: 'perfil_id'},
             {data: 'created_at', name: 'created_at'},
             {data: 'acoes', name: 'botoes'}
         ]
@@ -72,4 +68,42 @@ function onResetForm(e) {
  */
 function onSearchForm(e){
     oTable.draw();
+}
+
+/**
+ * Mostra a modal de alterar perfil
+ * @returns {undefined}
+ */
+function showModalAlterarPerfil() {
+    var objPerfil = $(this);
+    appUtil.confirmBox('Deseja realmente alterar o perfil deste usuário?', function(retorno) {
+        if (retorno) {
+            $('#modalAlterarPerfil').modal('show');
+    
+            $('.user_id').val(objPerfil.attr('data-rel-id'));
+            $('.perfil_id').val(objPerfil.attr('data-rel-perfil')).select2();
+            $('.userName').html(objPerfil.attr('data-rel-nome'));
+        }
+    });
+    
+}
+
+/**
+ * Altera o perfil do usuário
+ * @returns {undefined}
+ */
+function alterarPerfil() {
+    $.ajax({
+        url: APP.controller_url + '/alterarPerfil',
+        data: { 
+            perfil_id: $(this).val(),
+            user_id: $('.user_id').val()
+        },
+        method: "GET"
+    }).done(function(data) {
+        appUtil.createFlashMesseger(data.message, data.status);
+        oTable.draw();
+        $('#modalAlterarPerfil').modal('hide');
+    });
+
 }

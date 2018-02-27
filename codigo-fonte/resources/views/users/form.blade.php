@@ -1,19 +1,18 @@
 @extends('layout.master')
 @section('conteudo')
-@include('layout.erros')
 
-<?php
+@php
 echo LayoutBuilder::gerarBreadCrumb(array(
         'Início' => url('default/index'),
         'Lista de Usuários' => url('users/index'),
         'Cadastrar Usuário',
     ));
-?>
+@endphp
 @if($errors->all())
     @foreach ($errors->keys() as $key)
-        <?php
+        @php
             ${$key} = "has-error";
-        ?>
+        @endphp
     @endforeach
 @endif
 
@@ -24,9 +23,12 @@ echo LayoutBuilder::gerarBreadCrumb(array(
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <span class="caption-subject font-orange-sharp bold uppercase"><?php echo ($model->id ? 'Atualizar': 'Cadastrar'); ?> Usuário</span>
+                    <span class="caption-subject font-sharp bold uppercase"><?php echo ($model->id ? 'Atualizar': 'Cadastrar'); ?> Usuário</span>
                 </div>
             </div>
+            
+            @include('layout.erros')
+            
             <div class="portlet-body form">
                 {{ Form::open(['id' => 'model_form', 'method' => 'post', 'url' => 'users/save', 'class' => 'form-horizontal']) }}
                     {{ Form::text('id', $model->id, ['style' => 'display: none;', 'data-required' => 1, 'aria-required' => 'true', 'class' => 'form-control id_user']) }}
@@ -49,14 +51,14 @@ echo LayoutBuilder::gerarBreadCrumb(array(
                             <div class="form-group {{ $errors->has('nome') ? 'has-error' : '' }}">
                                 <label class="col-md-3 control-label"><b>{{ $model->labels['nome'] }}:</b><span class="request"> *</span></label>
                                 <div class="col-md-6">
-                                    {{ Form::text('nome', $model->nome, ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control', 'placeholder' => 'Nome Completo']) }}
+                                    {{ Form::text('nome', $model->nome, ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control', 'placeholder' => 'Nome Completo', 'maxlength' => 255]) }}
                                 </div>
                             </div>
                             
                             <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
                                 <label class="col-md-3 control-label"><b>{{ $model->labels['email'] }}:</b><span class="request"> *</span></label>
                                 <div class="col-md-6">
-                                    {{ Form::text('email', $model->email, ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control', 'placeholder' => 'exemplo@exemplo.com']) }}
+                                    {{ Form::text('email', $model->email, ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control', 'placeholder' => 'exemplo@exemplo.com', 'maxlength' => 255]) }}
                                 </div>
                             </div>
                             
@@ -65,14 +67,14 @@ echo LayoutBuilder::gerarBreadCrumb(array(
                             <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
                                 <label class="col-md-3 control-label"><b class="labelSenha">{{ $model->labels['password'] }}:</b><span class="request"> *</span></label>
                                 <div class="col-md-6">
-                                    {{ Form::password('password', ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control user_password', 'placeholder' => 'Senha']) }}
+                                    {{ Form::password('password', ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control user_password password_strength', 'placeholder' => 'Senha', 'maxlength' => 50]) }}
                                 </div>
                             </div>
 
                             <div class="form-group {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
                                 <label class="col-md-3 control-label"><b>{{ $model->labels['password_confirmation'] }}:</b><span class="request"> *</span></label>
                                 <div class="col-md-6">
-                                    {{ Form::password('password_confirmation', ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control user_password_confirmation', 'placeholder' => 'Confirmar Senha']) }}
+                                    {{ Form::password('password_confirmation', ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control user_password_confirmation', 'placeholder' => 'Confirmar Senha', 'maxlength' => 50]) }}
                                 </div>
                             </div>
                             
