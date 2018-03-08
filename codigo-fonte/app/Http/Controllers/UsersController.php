@@ -82,6 +82,7 @@ class UsersController extends Controller {
         if ($id) {
             $this->authorize('USERS_EDITAR', 'PermissaoPolicy');
             $model = $this->model->find($id);
+            $model->cenario = 'editar';
 
             if (!$model) {
                 $this->setMessage('O Usuário não foi encontrado', 'danger');
@@ -89,10 +90,11 @@ class UsersController extends Controller {
             }
         } else {
             $this->authorize('USERS_CADASTRAR', 'PermissaoPolicy');
+            $model->cenario = 'cadastrar';
         }
-        
         return view('users.form', array(
             'model' => $model,
+            'perfis' => \App\Models\Perfis::get()->pluck( 'nome','id'),
         ));
     }
 
@@ -103,17 +105,21 @@ class UsersController extends Controller {
      */
     public function save(UsersFormRequest $request) {
         $this->model->fill($request->all());
-        $this->model->cpf = preg_replace('/\D/', '', $this->model->cpf);
+        
+        unset($this->model->cenario);
+        
         if (!empty($this->model->id)) {
             $alterar = $this->model->find($this->model->id);
             
             if (empty($alterar) || is_null($alterar)) {
                 $this->setMessage('O Usuário a ser alterado não existe no banco de dados!', 'danger');    
             } else {
-                $this->setMessage('O Usuário foi alterado com sucesso!', 'success');    
+                $this->setMessage('O Usuário foi alterado com sucesso!', 'success'); 
+                $this->model->password = md5($this->model->password);
                 $alterar->update($this->model->toArray());
             }
         } else {
+            $this->model->password = md5($this->model->password);
             $this->model->create($this->model->toArray());
             $this->setMessage('O Usuário foi salvo com sucesso!', 'success');
         }
@@ -161,7 +167,7 @@ class UsersController extends Controller {
     }
     
     /**
-     * Ação de destruir/excluir um Usuário
+     * Ação de alterar perfil de um Usuário
      * @param object $request
      * @return Response::json
      */
@@ -169,7 +175,6 @@ class UsersController extends Controller {
         $data = $request->all();
         $status = true;
         $message = 'O perfil do usuário foi alterado com sucesso!';
-        
         
         if (!$this->model->find($data['user_id'])->update(['perfil_id' => $data['perfil_id']])) {
             $status = false;
@@ -200,7 +205,7 @@ class UsersController extends Controller {
         }
         
         $model = $this->model->find($id_user);
-        
+        $model->cenario = 'senha';
         if (!empty($dados)) {
             $model->fill($dados);
             

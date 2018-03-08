@@ -61,26 +61,31 @@ class PermissoesPerfis extends ModelControl {
     
     /**
      * Atribui permissão ao usuário
-     * @param array $dados
+     * @param integer $id
+     * @param string $permissao
+     * @param integer $perfil_id
+     * @return string
      */
-    public function atribuirPermissao($dados) {
-        $permissoes = $this->where('perfil_id', $dados['perfil_id'])
-                ->where('permissao_id', $dados['permissao_id']);
+    public function atribuirPermissao($id, $permissao, $perfil_id) {
+        $permissoes = $this->where('perfil_id', $perfil_id)
+                ->where('permissao_id', $id);
         $msg = '';
         
-        if ($dados['status'] == 'ativo') {
-            $permissoes->delete();
-            $msg = 'Permissão removida com sucesso.';
+        if ($permissao == 'ativo') {
+            if (!$permissoes->count()) {
+                $permissoes->insert([
+                    'permissao_id' => $id, 
+                    'perfil_id' => $perfil_id
+                ]);
+            }
         } else {
-            $permissoes->insert([
-                'permissao_id' => $dados['permissao_id'], 
-                'perfil_id' => $dados['perfil_id']
-            ]);
-            $msg = 'A permissão foi atribuida com sucesso.';
+            if ($permissoes->count()) {
+                $permissoes->delete();
+            }
         }
         
         self::setar(); //Seta as novas permissões na sessão
-        return $msg;
+        return 'As permissões foram salvas com sucesso!';
     }
     
     /**

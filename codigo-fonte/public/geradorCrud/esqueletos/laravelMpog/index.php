@@ -26,20 +26,21 @@
             
             @include('<?php echo $this->nome_tabela; ?>.index.search')
             
-            <div class="table-toolbar">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="btn-group" >
-                            <a href="{{ url('<?php echo $nomeTabelaRender; ?>/form') }}">
-                                <button class="btn sbold layoutBtnColor"> Adicionar
-                                    <i class="fa fa-plus"></i>
-                                </button>
-                            </a>
+            @if (\Auth::user()->verificarPermissao('<?php echo strtoupper($this->nome_tabela); ?>_CADASTRAR'))
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group" >
+                                <a href="{{ url('<?php echo $nomeTabelaRender; ?>/form') }}">
+                                    <button class="btn sbold layoutBtnColor"> Adicionar
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-            </div>
+            @endif
             
             <div class="portlet-body">
                 {!! $dataTable->table(['class' => 'table table-striped table-bordered table-hover order-column', 'id' => 'data_table']) !!}

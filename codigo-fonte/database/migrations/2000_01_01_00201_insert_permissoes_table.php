@@ -62,13 +62,13 @@ class InsertPermissoesTable extends Migration {
             [
                 'id' => 10, 
                 'permanente' => 1,
-                'permissao' => 'PARAMETROS_CADASTRO_PARAMETRO_EDITAVEL',
+                'permissao' => 'PARAMETROS_EDITAR',
                 'descricao' => 'Visualizar o campo parametro_editavel no cadastro dos Parâmetros',
             ],
             [
                 'id' => 11, 
                 'permanente' => 1,
-                'permissao' => 'PARAMETROS_LISTA_MODIFICACAO',
+                'permissao' => 'PARAMETROS_LISTAR',
                 'descricao' => 'Visualizar a lista para modificação de valor dos parâmetros',
             ],
             [

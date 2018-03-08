@@ -13,7 +13,7 @@ class InsertUsersTable extends Migration {
         DB::table('users')->insert([
             [
                 'id' => 1, 
-                'cpf' => '03044565006', 
+                'cpf' => '030.445.650-06', 
                 'nome' => 'Administrador',
                 'email' => 'fake@fake.com',
                 'perfil_id' => 1,
@@ -23,7 +23,7 @@ class InsertUsersTable extends Migration {
             ],
             [
                 'id' => 2, 
-                'cpf' => '24415378307', 
+                'cpf' => '330.551.154-06', 
                 'nome' => 'Juca',
                 'email' => 'juca@juca.com',
                 'perfil_id' => 2,

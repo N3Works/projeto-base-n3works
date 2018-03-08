@@ -35,9 +35,9 @@ class PermissoesDataTable extends DataTable {
                     $permissao = \Illuminate\Support\Facades\DB::table('permissoes_perfis')->where(['perfil_id' => $this->perfil_id, 'permissao_id' => $query->id])->count();
                     
                     if (!$permissao) {
-                        $columns['inativo'] = '<a href="javascript:void(0)" class="setarPermissao" data-rel="inativo" data-rel-id="'.$query->id.'"><i class="fa fa-square fa-2x"></i></a>';
+                        $columns['inativo'] = '<a href="javascript:void(0)" class="permissao" data-rel="inativo" data-rel-id="'.$query->id.'"><i class="fa fa-square fa-2x"></i></a>';
                     } else {
-                        $columns['ativo'] = '<a href="javascript:void(0)" class="setarPermissao" data-rel="ativo" data-rel-id="'.$query->id.'"><i class="fa fa-check-square fa-2x"></i></a>';
+                        $columns['ativo'] = '<a href="javascript:void(0)" class="permissao" data-rel="ativo" data-rel-id="'.$query->id.'"><i class="fa fa-check-square fa-2x"></i></a>';
                     }
                 }
 

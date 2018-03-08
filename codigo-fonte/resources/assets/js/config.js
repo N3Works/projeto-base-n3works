@@ -13,15 +13,17 @@ $(document).ready(function() {
     
     $(document).on('change', '.password_strength', strongPassword);
     
-    
     /**
      * Configuração base dos plugins
      */
     jqueryMask();
     numericTouchSpin();
     datePicker();
+    dateTimePicker();
     inputMaxLength();
     dropDownSelect2();
+    
+    jQuery.datetimepicker.setLocale('pt');
 });
 
 /**
@@ -57,9 +59,19 @@ function inputMaxLength() {
  * @returns {undefined}
  */
 function datePicker() {
-    $('.date-picker').datepicker({
-        format: 'dd/mm/yyyy',
-        language: 'pt-BR'
+    $('.date-picker').datetimepicker({
+        format: 'd/m/Y',
+        timepicker: false
+    });
+}
+
+/**
+ * Configuração padrão do dateTimePicker
+ * @returns {undefined}
+ */
+function dateTimePicker() {
+    $('.datetime-picker').datetimepicker({
+        format:'d/m/Y h:m:s'
     });
 }
 

@@ -66,7 +66,7 @@ $model->parametro_editavel = ($model->parametro_editavel ? $model->parametro_edi
                                 </div>
                             </div>
                             
-                            @if (\Auth::user()->verificarPermissao('PARAMETROS_CADASTRO_PARAMETRO_EDITAVEL'))
+                            @if (\Auth::user()->verificarPermissao('PARAMETROS_EDITAR'))
                             <div class="form-group {{$errors->first('parametro_editavel', 'has-error') }}">
                                 <label class="col-md-3 control-label"><b>{{ $model->labels['parametro_editavel'] }}:</b><span class="request"> *</span></label>
                                 <div class="col-md-6">                                    

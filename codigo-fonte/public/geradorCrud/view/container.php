@@ -33,6 +33,17 @@
                 </div>
             </div>
         </div>
+        <div class="row">    
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Gerador_basededados" title="Base de Dados">Base de Dados</label>
+                    <select name="Gerador[basededados]" id="Gerador_basededados" class="select2 form-control" disabled="disabled">
+                        <option value="">Selecione uma Base</option>
+                        <option value="mysql" selected="selected" >MySQL</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         <div class="tabs-gerador">
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#conteudo" aria-controls="conteudo" role="tab" data-toggle="tab">Conteúdo</a></li>

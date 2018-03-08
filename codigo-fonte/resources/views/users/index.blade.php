@@ -27,19 +27,21 @@ echo LayoutBuilder::gerarBreadCrumb(array(
             
             @include('users.index.search')
             
-            <div class="table-toolbar">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="btn-group" >
-                            <a href="{{ url('users/form') }}">
-                                <button class="btn sbold layoutBtnColor"> Adicionar
-                                    <i class="fa fa-plus"></i>
-                                </button>
-                            </a>
+            @if (\Auth::user()->verificarPermissao('USERS_CADASTRAR'))
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group" >
+                                <a href="{{ url('users/form') }}">
+                                    <button class="btn sbold layoutBtnColor"> Adicionar
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
             
             <div class="portlet-body">
                 {!! $dataTable->table(['class' => 'table table-striped table-bordered table-hover order-column', 'id' => 'data_table']) !!}

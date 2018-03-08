@@ -19,12 +19,19 @@ class UsersDataTable extends DataTable {
     public function ajax() {
         return $this->datatables->of($this->model->consultar())
             ->addColumn('acoes', function ($query) {
-                $botoes = [
-                    'show' => '<a  href="' . url('users/show/' . $query->id) . '" title="Detalhe"><button class="btn btn-default"><i class="fa fa-search"></i></button></a>',
-                    'edit' => '<a  href="' . url('users/form/' . $query->id) . '" title="Editar" ><button class="btn btn-primary"><i class="fa fa-pencil"></i></button></a>',
-                    'perfil' => '',
-                    'delete' => '<a  href="#devNull" class="destroyTr" title="Excluir" data-rel="'.$query->id.'" ><button class="btn btn-danger"><i class="fa fa-times"></i></button></a>',
-                ];
+                $botoes = [];
+                
+                if (\Auth::user()->verificarPermissao('DATATESTE_DETALHAR')) {
+                    $botoes['show'] = '<a  href="' . url('users/show/' . $query->id) . '" title="Detalhe"><button class="btn btn-default"><i class="fa fa-search"></i></button></a>';
+                }
+                
+                if (\Auth::user()->verificarPermissao('DATATESTE_EDITAR')) {
+                    $botoes['edit'] = '<a  href="' . url('users/form/' . $query->id) . '" title="Editar" ><button class="btn btn-primary"><i class="fa fa-pencil"></i></button></a>';
+                }
+                    
+                if (\Auth::user()->verificarPermissao('DATATESTE_EXCLUIR')) {
+                    $botoes['delete'] = '<a  href="#devNull" class="destroyTr" title="Excluir" data-rel="'.$query->id.'" ><button class="btn btn-danger"><i class="fa fa-times"></i></button></a>';
+                }
                 
                 if (\Auth::user()->verificarPermissao('USERS_LISTAR_BTN_PERFIL')) {
                     $botoes['perfil'] = '<a href="javascript:void(0)"
@@ -50,9 +57,6 @@ class UsersDataTable extends DataTable {
             })
             ->editColumn('perfil_id', function($query) {
                 return ($query->Perfil ? $query->Perfil->nome : '');
-            })
-            ->editColumn('cpf', function($query) {
-                return Formatar::mask($query->cpf, '###.###.###-##');
             })
             ->make(true);
     }

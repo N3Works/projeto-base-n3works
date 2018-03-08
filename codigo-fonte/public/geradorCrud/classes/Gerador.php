@@ -112,7 +112,6 @@ class Gerador extends Modelo {
     }
     
     public function gerarModel() {
-        
         list($nomeTabelaRender, $nomeTabelaModel) = $this->nomeTabela($this->nome_tabela);
         $path = $this->montarCaminho('model');
         

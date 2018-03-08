@@ -8,8 +8,7 @@
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <script src="{{ asset('template/global/plugins/bootstrap-daterangepicker/moment.min.js') }}" type="text/javascript"></script>
-<script src="{{ asset('template/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}" type="text/javascript"></script>
-<script src="{{ asset('template/global/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.pt-BR.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('plugins/datetimepicker-master/build/jquery.datetimepicker.full.min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('template/global/plugins/morris/morris.min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('template/global/plugins/morris/raphael-min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('template/global/plugins/counterup/jquery.waypoints.min.js') }}" type="text/javascript"></script>

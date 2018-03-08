@@ -32,6 +32,7 @@ echo LayoutBuilder::gerarBreadCrumb(array(
             <div class="portlet-body form">
                 {{ Form::open(['id' => 'model_form', 'method' => 'post', 'url' => 'users/save', 'class' => 'form-horizontal']) }}
                     {{ Form::text('id', $model->id, ['style' => 'display: none;', 'data-required' => 1, 'aria-required' => 'true', 'class' => 'form-control id_user']) }}
+                    {{ Form::text('cenario', $model->cenario, ['style' => 'display: none;', 'data-required' => 1, 'aria-required' => 'true', 'class' => 'form-control cenario']) }}
                     
                     <div class="form-body">
                         <div class="col-md-8">
@@ -44,7 +45,6 @@ echo LayoutBuilder::gerarBreadCrumb(array(
                                     @else
                                         {{ Form::text('cpf', $model->cpf, ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control cpf_user maskCpf', 'placeholder' => '000.000.000-00' ]) }}
                                     @endif
-                                    
                                 </div>
                             </div>
                             
@@ -52,6 +52,13 @@ echo LayoutBuilder::gerarBreadCrumb(array(
                                 <label class="col-md-3 control-label"><b>{{ $model->labels['nome'] }}:</b><span class="request"> *</span></label>
                                 <div class="col-md-6">
                                     {{ Form::text('nome', $model->nome, ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control', 'placeholder' => 'Nome Completo', 'maxlength' => 255]) }}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group {{ $errors->has('perfil_id') ? 'has-error' : '' }}">
+                                <label class="col-md-3 control-label"><b>{{ $model->labels['perfil_id'] }}:</b><span class="request"> *</span></label>
+                                <div class="col-md-6">
+                                    {{ Form::select('perfil_id', $perfis, $model->perfil_id, ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control', 'placeholder' => 'Selecione']) }}
                                 </div>
                             </div>
                             

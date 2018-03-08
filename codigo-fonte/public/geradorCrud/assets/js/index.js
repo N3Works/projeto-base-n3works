@@ -112,7 +112,7 @@ function showModalLabels(show) {
                 colunas.push(data[i].nome_coluna);
                 nome_coluna = recomendacaoLabel(data[i].nome_coluna);
                 
-                if (data[i].tipo_coluna == 'date' || data[i].tipo_coluna == 'dateTime') {
+                if (data[i].tipo_coluna == 'date' || data[i].tipo_coluna == 'datetime') {
                     temEspecificacao = false;
                     showDropdownlist = false;
                 }
@@ -132,50 +132,61 @@ function showModalLabels(show) {
                 html += '        <label style="margin-top: 6px;" data-toggle="tooltip" data-placement="top" title="Mostrar na listagem."><input type="checkbox" checked="checked" name="LabelsOptions[mostrarListagem]['+data[i].nome_coluna+']" value="1"> <i class="fa fa-list"></i></label>';
                 html += '    </div>';
                 
-                html += '    <div class="col-md-1 col-sm-1 form-group">';
-                html += '        <label style="margin-top: 6px;" data-toggle="tooltip" data-placement="top" title="Campo Obrigatório."><input type="checkbox" '+ ( data[i].obrigatorio ? 'checked="checked"' : '' ) +' name="LabelsOptions[campoObrigatorio]['+data[i].nome_coluna+']" value="1"><i class="fa fa-asterisk"></i></label>';
-                html += '    </div>';
-                
-                html += '    <div class="col-md-1 col-sm-1 form-group">';
-                html += '    <div class="dropdownlist_div" '+(showDropdownlist ? '' : 'style="display: none;"')+'>';
-                html += '        <input type="hidden" name="LabelsOptions[campoDropdownName]['+data[i].nome_coluna+']" class="campoDropdownName_'+data[i].nome_coluna+'" value="" >';
-                html += '        <label style="margin-top: 6px; cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Inserir DropDown no lugar do inputText." ><small href="javascript:void(0)" class="addDropDown" data-rel="'+data[i].nome_coluna+'"><i class="fa fa-plus"></i>List</small></label>';
-                html += '    </div>';
-                html += '    </div>';
-                
-                if (data[i].colunas_relacao.length > 0) {
-                    temEspecificacao = false;
-                    var relacao = data[i].colunas_relacao;
+                if (!data[i].primaria) {
                     
-                    html += '<div class="col-md-3 col-sm-3 input-group" data-toggle="tooltip" data-placement="top" title="Coluna que irá aparecer no dropdown da relação nas telas." >';
-                    html += '    <span class="input-group-addon"><i class="fa fa-list"></i></span>';
-                    html += '    <select name="LabelsOptions[ColunaRelacao]['+data[i].nome_coluna+']" class="select2 form-control">';
-
-                    for (var i in relacao) {
-                        html += '<option value="' + relacao[i].COLUMN_NAME + '">'+ relacao[i].COLUMN_NAME +'</option>';
+                    //Caso for obrigatório diretamente do banco de dados então força a obrigatoriedade
+                    if (data[i].obrigatorio) {
+                        html += '    <div class="col-md-1 col-sm-1 form-group">';
+                        html += '        <input type="checkbox" style="display:none;" '+ ( data[i].obrigatorio ? 'checked="checked"' : '' ) +' name="LabelsOptions[campoObrigatorio]['+data[i].nome_coluna+']" value="1">';
+                        html += '        <label style="margin-top: 6px;" data-toggle="tooltip" data-placement="top" title="Campo Obrigatório."><input disabled="disabled" type="checkbox" '+ ( data[i].obrigatorio ? 'checked="checked"' : '' ) +' name="LabelsOptions[campoObrigatorio]['+data[i].nome_coluna+']" value="1"><i class="fa fa-asterisk"></i></label>';
+                        html += '    </div>';
+                    } else {
+                        //Caso contrário, ele deixa o usuário selecionar se quer que o campo seja controlado via sistema.
+                        html += '    <div class="col-md-1 col-sm-1 form-group">';
+                        html += '        <label style="margin-top: 6px;" data-toggle="tooltip" data-placement="top" title="Campo Obrigatório."><input type="checkbox" name="LabelsOptions[campoObrigatorio]['+data[i].nome_coluna+']" value="1"><i class="fa fa-asterisk"></i></label>';
+                        html += '    </div>';
                     }
-                    html += '    </select>';   
-                    html += '</div>';
-                }
-                
-                if (temEspecificacao) {
-                    html += '<div class="col-md-3 col-sm-3 input-group" data-toggle="tooltip" data-placement="top" title="Tipo da formatação." >';
-                    html += '    <span class="input-group-addon"><i class="fa fa-cog"></i></span>';
-                    html += '    <select name="LabelsOptions[tipoDeInput]['+data[i].nome_coluna+']" class="select2 selectTipoDeInput form-control">';
-                    html += '        <option value="">Sem Formatação</option>';
-                    html += '        <option value="telefone">Telefone</option>';
-                    html += '        <option value="cpf">CPF</option>';
-                    html += '        <option value="cnpj">CNPJ</option>';
-                    html += '        <option value="cep">CEP</option>';
-                    html += '        <option value="telefone">Telefone</option>';
-                    html += '        <option value="porcentual">Porcentagem</option>';
-//                    html += '        <option value="money">Preço (R$)</option>';
-                    html += '        <option value="dateTime">Data + Tempo</option>';
-                    html += '        <option value="ipAddress">Endereço de IP</option>';
-                    html += '        <option value="situacao">Ativo / Inativo</option>';
-                    html += '    </select>';
-                    html += '</div>';
-                    
+
+                    html += '    <div class="col-md-1 col-sm-1 form-group">';
+                    html += '    <div class="dropdownlist_div" '+(showDropdownlist ? '' : 'style="display: none;"')+'>';
+                    html += '        <input type="hidden" name="LabelsOptions[campoDropdownName]['+data[i].nome_coluna+']" class="campoDropdownName_'+data[i].nome_coluna+'" value="" >';
+                    html += '        <label style="margin-top: 6px; cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Inserir DropDown no lugar do inputText." ><small href="javascript:void(0)" class="addDropDown" data-rel="'+data[i].nome_coluna+'"><i class="fa fa-plus"></i>List</small></label>';
+                    html += '    </div>';
+                    html += '    </div>';
+
+                    if (data[i].colunas_relacao.length > 0) {
+                        temEspecificacao = false;
+                        var relacao = data[i].colunas_relacao;
+
+                        html += '<div class="col-md-3 col-sm-3 input-group" data-toggle="tooltip" data-placement="top" title="Coluna que irá aparecer no dropdown da relação nas telas." >';
+                        html += '    <span class="input-group-addon"><i class="fa fa-list"></i></span>';
+                        html += '    <select name="LabelsOptions[ColunaRelacao]['+data[i].nome_coluna+']" class="select2 form-control">';
+
+                        for (var i in relacao) {
+                            html += '<option value="' + relacao[i].COLUMN_NAME + '">'+ relacao[i].COLUMN_NAME +'</option>';
+                        }
+                        html += '    </select>';   
+                        html += '</div>';
+                    }
+
+                    if (temEspecificacao) {
+                        html += '<div class="col-md-3 col-sm-3 input-group" data-toggle="tooltip" data-placement="top" title="Tipo da formatação." >';
+                        html += '    <span class="input-group-addon"><i class="fa fa-cog"></i></span>';
+                        html += '    <select name="LabelsOptions[tipoDeInput]['+data[i].nome_coluna+']" class="select2 selectTipoDeInput form-control">';
+                        html += '        <option value="">Sem Formatação</option>';
+                        html += '        <option value="telefone">Telefone</option>';
+                        html += '        <option value="cpf">CPF</option>';
+                        html += '        <option value="cnpj">CNPJ</option>';
+                        html += '        <option value="cep">CEP</option>';
+                        html += '        <option value="telefone">Telefone</option>';
+                        html += '        <option value="porcentual">Porcentagem</option>';
+    //                    html += '        <option value="money">Preço (R$)</option>';
+                        html += '        <option value="ipAddress">Endereço de IP</option>';
+                        html += '        <option value="situacao">Ativo / Inativo</option>';
+                        html += '    </select>';
+                        html += '</div>';
+
+                    }
                 }
                 
                 html += '    </div>';

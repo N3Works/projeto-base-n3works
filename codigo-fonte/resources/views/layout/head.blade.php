@@ -11,8 +11,7 @@
 <link href="{{ asset('template/global/plugins/uniform/css/uniform.default.css') }}" rel="stylesheet" type="text/css" >
 <link href="{{ asset('template/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css') }}" rel="stylesheet" type="text/css" >
  <!--Começo da pagina voltada a plugins--> 
-<!--<link href="{{ asset('template/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css" >-->
-<link href="{{ asset('template/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet" type="text/css" >
+<link href="{{ asset('plugins/datetimepicker-master/build/jquery.datetimepicker.min.css') }}" rel="stylesheet" type="text/css" >
 <link href="{{ asset('template/global/plugins/morris/morris.css') }}" rel="stylesheet" type="text/css" >
 <link href="{{ asset('template/global/plugins/fullcalendar/fullcalendar.min.css') }}" rel="stylesheet" type="text/css" >
 <link href="{{ asset('template/global/plugins/jqvmap/jqvmap/jqvmap.css') }}" rel="stylesheet" type="text/css" >        

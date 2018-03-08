@@ -164,12 +164,24 @@ class PermissoesController extends Controller {
      * Atribui a permissão ao funcionário
      * @param Request $request
      */
-    public function atribuirPermissao(Request $request) {
+    public function salvarPermissoes(Request $request) {
+        $data = $request->all();
         $model = new PermissoesPerfis();
-        $dados = $request->all();
+        $success = true;
+        $msg = '';
+        
+        if (isset($data['permissoes_ids']) && count($data['permissoes_ids']) > 0) {
+            foreach ($data['permissoes_ids'] as $key => $id) {
+                $msg = $model->atribuirPermissao($id, $data['permissoes'][$key], $data['perfil_id']);
+            }
+        } else {
+            $msg = 'Falha ao inserir as permissões.';
+            $success = false;
+        }
+        
         return Response::json(array(
-            'success' => true,
-            'msg' => $model->atribuirPermissao($dados),
+            'success' => $success,
+            'msg' => $msg,
         ));
     }
 }

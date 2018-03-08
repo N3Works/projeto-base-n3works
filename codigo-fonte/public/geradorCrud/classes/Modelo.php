@@ -235,6 +235,9 @@ class Modelo extends Banco {
                 case 'date':
                     $string = 'Form::text(\''.$coluna['nome_coluna'].'\', $model->'.$coluna['nome_coluna'].', [\'placeholder\' => \'dd/mm/aaaa\', \'data-required\' => 1,\'aria-required\' => \'true\' ,\'class\' => \'form-control maskDate date-picker\'])';
                     break;
+                case 'datetime':
+                    $string = 'Form::text(\''.$coluna['nome_coluna'].'\', $model->'.$coluna['nome_coluna'].', [\'placeholder\' => \'dd/mm/aaaa 00:00:00\', \'data-required\' => 1,\'aria-required\' => \'true\' ,\'class\' => \'form-control maskDateTime datetime-picker\'])';
+                    break;
                 case 'int':
                     $model = $this->criarRelacao($coluna, $relacoes);
                     $tipo = $coluna['tipo_input'];
@@ -260,7 +263,7 @@ class Modelo extends Banco {
                     $classFormating = '';
                     $tipo = $coluna['tipo_input'];
                     
-                    if (in_array($tipo, ['dateTime', 'cep', 'cpf', 'cnpj', 'telefone', 'telefoneUs', 'ipAddress', 'money', 'porcentual', 'number'])) {
+                    if (in_array($tipo, ['cep', 'cpf', 'cnpj', 'telefone', 'telefoneUs', 'ipAddress', 'money', 'porcentual', 'number'])) {
                         $classFormating = $this->buscarClassInputFormatacao($tipo);
                     }
                     

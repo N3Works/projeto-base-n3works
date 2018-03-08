@@ -38,7 +38,7 @@ function configTable() {
             data: function (data) {
                 data.nome = $('input[name=nome]').val();
                 data.cpf = $('input[name=cpf]').val();
-                data.email = $('select[name=email]').val();
+                data.email = $('input[name=email]').val();
             }
         },
         columns: [

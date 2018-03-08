@@ -48,7 +48,7 @@ class LoginController extends Controller {
             }
             
             //Desformatar cpf e dar  md5($dados['senha'])
-            $user = \App\User::where('cpf', preg_replace('/\D/', '', $dados['login']['cpf']))
+            $user = \App\User::where('cpf', $dados['login']['cpf'])
                     ->where('password', md5($dados['login']['senha']));
             $userData = $user->first();
             

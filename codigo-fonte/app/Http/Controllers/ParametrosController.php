@@ -188,7 +188,7 @@ class ParametrosController extends Controller {
      * @return Response::json
      */
     public function configurar() {
-        $this->authorize('PARAMETROS_LISTA_MODIFICACAO', 'PermissaoPolicy');
+        $this->authorize('PARAMETROS_LISTAR', 'PermissaoPolicy');
         return view('parametros.configurar', ['model' => $this->model]);
     }
     

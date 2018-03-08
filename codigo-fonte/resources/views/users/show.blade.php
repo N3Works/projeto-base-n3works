@@ -28,7 +28,7 @@ echo LayoutBuilder::gerarBreadCrumb(array(
                         <div class="col-sm-6">
                             <div class="form-body">
                             <label class="control-label">{{ $model->labels['cpf'] }} </label>
-                                <div class="form-control">{{ Formatar::mask($model->cpf, '###.###.###-##') }}</div>
+                                <div class="form-control">{{ $model->cpf }}</div>
                             </div>
                         </div>
                         <div class="col-sm-6">

@@ -27,6 +27,7 @@ class User extends Authenticatable {
         'remember_token',
         'created_at',
         'updated_at',
+        'cenario', //Utilizado no FormRequest
     ];
     
     /**
@@ -81,15 +82,15 @@ class User extends Authenticatable {
         $consulta = self::select('*')->orderBy('id', 'DESC');
         
         if ($this->cpf) {
-            $consulta->where('cpf', 'like', '%'.$this->cpf.'%');
+            $consulta->where('cpf', 'LIKE', '%'.$this->cpf.'%');
         }
         
         if ($this->nome) {
-            $consulta->where('nome', 'like', '%'.$this->nome.'%');
+            $consulta->where('nome', 'LIKE', '%'.$this->nome.'%');
         }
         
         if ($this->email) {
-            $consulta->where('email', 'like', '%'.$this->email.'%');
+            $consulta->where('email', 'LIKE', '%'.$this->email.'%');
         }
         
         return $consulta->get();
@@ -101,7 +102,7 @@ class User extends Authenticatable {
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'password_confirmation',
+        'remember_token', 'password_confirmation',
     ];
     
     /**

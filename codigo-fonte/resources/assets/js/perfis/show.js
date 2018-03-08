@@ -1,9 +1,12 @@
 var oTable = configTable();//Seta a configuração do datatables
+var permissaoAtiva = '<a href="javascript:void(0)" class="permissao" data-rel="ativo" data-rel-id=""><i class="fa fa-check-square fa-2x"></i></a>';
+var permissaoInativa = '<a href="javascript:void(0)" class="permissao" data-rel="inativo" data-rel-id=""><i class="fa fa-square fa-2x"></i></a>';
 
 $(document).ready(function() {
+    $(document).on('click', '.permissao', selecionarPermissao);
     $(document).on('click', '.pesquisar_form', onSearchForm);
     $(document).on('click', '#limparFiltros',  onResetForm);
-    $(document).on('click', '.setarPermissao', setarPermissao);
+    $(document).on('click', '.salvarPermissoes', salvarPermissoes);
 });
 
 /**
@@ -27,8 +30,9 @@ function configTable() {
  
             api.column(0, {page:'current'} ).data().each( function ( group, i ) {
                 var groupBroken = group.split('_');
-                group = groupBroken[0];
                 
+                group = groupBroken[0];
+
                 if ( last !== group ) {
                     
                     $(rows).eq( i ).before(
@@ -66,26 +70,40 @@ function onSearchForm(e){
 }
 
 /**
+ * Seleciona a nova permissao
+ * @returns {undefined}
+ */
+function selecionarPermissao() {
+    var id = $(this).attr('data-rel-id');
+    var situacao = $(this).attr('data-rel');
+    var father = $(this).parent();
+    $(this).remove();
+    father.append((situacao == 'ativo' ? permissaoInativa : permissaoAtiva));
+    father.find('.permissao').attr('data-rel-id', id);
+}
+
+/**
  * Seta a permissão para o usuário
  * @returns {undefined}
  */
-function setarPermissao() {
-    var status = $(this).attr('data-rel');
-    var permissao_id = $(this).attr('data-rel-id');
+function salvarPermissoes() {
+    var permissoes = [];
+    permissoes.ids = new Array();
+    permissoes.permissoes = new Array();
     
-    var msg = 'Deseja realmente atribuir esta permissão?';
-    if (status == 'ativo') {
-        msg = 'Deseja realmente remover esta permissão?';
-    }
+    $('.permissao').each(function() {
+        permissoes.ids.push($(this).attr('data-rel-id'));
+        permissoes.permissoes.push($(this).attr('data-rel'));
+    });
     
-    appUtil.confirmBox(msg, function(retorno) {
+    appUtil.confirmBox('Deseja realmente atualizar as permissões?', function(retorno) {
         if (retorno) {
             $.ajax({
-                url: APP.base_url + '/permissoes/atribuirPermissao',
+                url: APP.base_url + '/permissoes/salvarPermissoes',
                 data: { 
                     perfil_id: $('.perfil_id').val(),
-                    permissao_id: permissao_id,
-                    status: status
+                    permissoes_ids: permissoes.ids,
+                    permissoes: permissoes.permissoes
                 },
                 method: "GET"
             }).done(function(data) {
