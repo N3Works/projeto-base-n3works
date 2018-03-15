@@ -75,28 +75,6 @@ class User extends Authenticatable {
     }
 
     /**
-     * Realiza a consulta da tabela
-     * @return array
-     */
-    public function consultar() {
-        $consulta = self::select('*')->orderBy('id', 'DESC');
-        
-        if ($this->cpf) {
-            $consulta->where('cpf', 'LIKE', '%'.$this->cpf.'%');
-        }
-        
-        if ($this->nome) {
-            $consulta->where('nome', 'LIKE', '%'.$this->nome.'%');
-        }
-        
-        if ($this->email) {
-            $consulta->where('email', 'LIKE', '%'.$this->email.'%');
-        }
-        
-        return $consulta->get();
-    }
-
-    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
@@ -106,11 +84,14 @@ class User extends Authenticatable {
     ];
     
     /**
-     * Verificar permissionamento
+     * Verificar permissionamento (Utilizada por causa do \Auth::user())
      * @param string $permissao
      * @return boolean
      */
     public static function verificarPermissao($permissao) {
+        
+        /*!!!! Nunca Tirar daqui essa função !!!! */
+        
         $sessao = app('session.store');
         $permissoes = [];
         
@@ -122,47 +103,5 @@ class User extends Authenticatable {
             return true;
         }
         return false;
-    }
-    
-    /**
-     * Trocar a senha atual por uma nova
-     * @return array
-     */
-    public function trocarSenha() {
-        $dadosRequest = array_map('trim', $this->attributes);
-        $count = count($dadosRequest);
-
-        if (count(array_filter($dadosRequest)) != $count) {
-            return ['mensagem' => 'Todos os campos são de preenchimento obrigatório', 'tipo' => 'danger'];
-        }
-        
-        $user = $this->where('id', $dadosRequest['id'])
-            ->where('password', md5($dadosRequest['password_atual']));
-            
-        if ($user->count() < 1) {
-            return ['mensagem' => 'A senha atual é inválida.', 'tipo' => 'danger'];
-        }
-
-        $user->update(['password' => md5($dadosRequest['password'])]);
-        
-        return ['mensagem' => 'Senha alterada com sucesso.', 'tipo' => 'success'];
-    }
-    
-    /**
-     * Recupera a senha do usuário e envia um e-mail com a nova
-     * @return array
-     */
-    public function recuperarSenha() {
-        $user = $this->where('email', $this->email);
-        if ($user->count() < 1) {
-            return ['mensagem' => 'Este e-mail não existe na base.', 'tipo' => 'danger'];
-        }
-        
-        $codigo = Http\Helper\Util::gerarCodigo();
-        $user->update(['password' => md5($codigo)]);
-        
-        Http\Helper\SendMail::simpleEmailSending($user->first(), 'Recuperar Senha', 'users.mail.recuperar-senha', ['password' => $codigo]);
-        
-        return ['mensagem' => 'Foi enviado um e-mail com a nova senha.', 'tipo' => 'success'];
     }
 }

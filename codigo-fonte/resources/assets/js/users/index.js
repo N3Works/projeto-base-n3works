@@ -97,9 +97,10 @@ function alterarPerfil() {
         url: APP.controller_url + '/alterarPerfil',
         data: { 
             perfil_id: $(this).val(),
-            user_id: $('.user_id').val()
+            user_id: $('.user_id').val(),
+            _token: APP.token
         },
-        method: "GET"
+        method: "POST"
     }).done(function(data) {
         appUtil.createFlashMesseger(data.message, data.status);
         oTable.draw();

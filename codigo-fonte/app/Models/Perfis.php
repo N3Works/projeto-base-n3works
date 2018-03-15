@@ -56,13 +56,4 @@ class Perfis extends ModelControl {
     public function Permissoes() {
         return $this->belongsToMany('App\Models\Permissoes', 'permissoes_users', 'perfil_id', 'permissao_id');
     }
-
-    /**
-     * Realiza a consulta da tabela
-     * @return array
-     */
-    public function consultar() {
-        $consulta = self::select('*')->orderBy('id', 'DESC');
-        return $consulta->get();
-    }
 }

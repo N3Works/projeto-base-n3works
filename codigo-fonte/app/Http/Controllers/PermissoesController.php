@@ -10,11 +10,11 @@ use App\Http\Requests\PermissoesFormRequest;
 use App\DataTables\PermissoesDataTable as DataTable;
 use Response;
 
-//Modelo da controller
-use App\Models\Permissoes; 
+//Repository->Model da controller
+use App\Repositories\PerfisRepository; 
 
-//Seta models referenciadas
-use App\Models\PermissoesPerfis;
+//Seta repository->Model referenciadas
+use App\Repositories\PermissoesPerfisRepository;
 
 /**
  * Controlador dos Planos anuais
@@ -25,7 +25,7 @@ class PermissoesController extends Controller {
     /**
      * @var Permissoes
      */
-    protected $model;
+    protected $repository;
     
     /**
      * @var DataTable
@@ -36,8 +36,8 @@ class PermissoesController extends Controller {
      * PermissoesController constructor.
      * @param Permissoes $permissoes
      */
-    public function __construct(Permissoes $permissoes, DataTable $dataTable) {
-        $this->model = $permissoes;
+    public function __construct(PerfisRepository $repository, DataTable $dataTable) {
+        $this->repository = $repository;
         $this->dataTable = $dataTable;
     }
     
@@ -49,15 +49,15 @@ class PermissoesController extends Controller {
     public function index(Request $request) {
         $this->authorize('PERMISSOES_LISTAR', 'PermissaoPolicy');
         
-        $this->model->fill($request->all());
+        $this->repository->fill($request->all());
         
         if (app('request')->isXmlHttpRequest()) {
-            $this->dataTable->model = $this->model;
+            $this->dataTable->model = $this->repository;
             return $this->dataTable->ajax();
         }
         
         return view('permissoes.index', array(
-            'model' => $this->model->get(),
+            'model' => $this->repository->get(),
             'dataTable' => $this->dataTable->html(),
         ));
     }
@@ -68,8 +68,8 @@ class PermissoesController extends Controller {
      * @return json
      */
     public function consultar(Request $request) {
-        $this->model->setAttributes($request->all());
-        return $this->model->consultarDataTables();
+        $this->repository->fill($request->all());
+        return $this->repository->consultarDataTables();
     }
     
     /**
@@ -79,14 +79,13 @@ class PermissoesController extends Controller {
     public function form(Request $request) {
         
         $id = $request->route('id');
-        $this->model->fill($request->all());
+        $this->repository->fill($request->all());
         
-        $model = $this->model;
+        $model = $this->repository;
         
         if ($id) {
             $this->authorize('PERMISSOES_EDITAR', 'PermissaoPolicy');
-            $model = $this->model->find($id);
-            $model->formatAttributes('get');
+            $model = $this->repository->buscarPorID($id);
 
             if (!$model) {
                 $this->setMessage('O Permissão não foi encontrado', 'danger');
@@ -107,20 +106,14 @@ class PermissoesController extends Controller {
      * @return Response
      */
     public function save(PermissoesFormRequest $request) {
-        $this->model->setAttributes($request->all());
-        $this->model->formatAttributes('save');
-        
-        if (!empty($this->model->id)) {
-            $alterar = $this->model->find($this->model->id);
-            
-            if (empty($alterar) || is_null($alterar)) {
-                $this->setMessage('O Permissão a ser alterado não existe no banco de dados!', 'danger');    
+        if (!empty($request->get('id'))) {
+            if ($this->repository->atualizar($request->get('id'), $request->all())) {
+                $this->setMessage('O Permissão foi alterado com sucesso!', 'success');
             } else {
-                $this->setMessage('O Permissão foi alterado com sucesso!', 'success');    
-                $alterar->update($this->model->toArray());
+                $this->setMessage('O Permissão a ser alterado não existe no banco de dados!', 'danger');
             }
         } else {
-            $this->model->create($this->model->toArray());
+            $this->repository->cadastrar($request->all());
             $this->setMessage('O Permissão foi salvo com sucesso!', 'success');
         }
         
@@ -134,8 +127,7 @@ class PermissoesController extends Controller {
      */
     public function show($id) {
         $this->authorize('PERMISSOES_DETALHAR', 'PermissaoPolicy');
-        $model = Permissoes::find($id);
-        $model->formatAttributes('get');
+        $model = $this->repository->buscarPorID($id);
         
         if (!$model) {
             $this->setMessage('O Permissão não foi encontrado', 'danger');
@@ -150,13 +142,14 @@ class PermissoesController extends Controller {
      * @return Response::json
      */
     public function destroy($id) {
-        $model = $this->model->find($id);
-
-        $model->findOrFail($id)->delete();
-        
+        $bol = $this->repository->deletar($id);
+        $msg = 'A permissão foi excluida com sucesso!';
+        if (!$bol) {
+            $msg = 'Permissão não encontrada.';
+        }
         return Response::json(array(
-            'success' => true,
-            'msg' => 'O Permissão foi excluido com sucesso!',
+            'success' => $bol,
+            'msg' => $msg,
         ));
     }
     
@@ -166,13 +159,13 @@ class PermissoesController extends Controller {
      */
     public function salvarPermissoes(Request $request) {
         $data = $request->all();
-        $model = new PermissoesPerfis();
+        $repository = new PermissoesPerfisRepository();
         $success = true;
         $msg = '';
         
         if (isset($data['permissoes_ids']) && count($data['permissoes_ids']) > 0) {
             foreach ($data['permissoes_ids'] as $key => $id) {
-                $msg = $model->atribuirPermissao($id, $data['permissoes'][$key], $data['perfil_id']);
+                $msg = $repository->atribuirPermissao($id, $data['permissoes'][$key], $data['perfil_id']);
             }
         } else {
             $msg = 'Falha ao inserir as permissões.';

@@ -45,6 +45,10 @@ class Modelo extends Banco {
             case 'model':
                 $caminhoTipo = $caminho.'/app/Models';
                 break; 
+            
+            case 'repository':
+                $caminhoTipo = $caminho.'/app/Repositories';
+                break; 
 
             case 'migration':
                 $caminhoTipo = $caminho.'/database/migrations';

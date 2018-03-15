@@ -113,11 +113,16 @@ class Gerador extends Modelo {
     
     public function gerarModel() {
         list($nomeTabelaRender, $nomeTabelaModel) = $this->nomeTabela($this->nome_tabela);
-        $path = $this->montarCaminho('model');
         
+        $pathModel = $this->montarCaminho('model');
         ob_start();
         include 'esqueletos/laravelMpog/model.php';
-        file_put_contents($path .'/'. $nomeTabelaModel . '.php', ob_get_clean());
+        file_put_contents($pathModel .'/'. $nomeTabelaModel . '.php', ob_get_clean());
+        
+        $pathRepository = $this->montarCaminho('repository');
+        ob_start();
+        include 'esqueletos/laravelMpog/repository.php';
+        file_put_contents($pathRepository .'/'. $nomeTabelaModel . 'Repository.php', ob_get_clean());
     }
     
     public function gerarView() {

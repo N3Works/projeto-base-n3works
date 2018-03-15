@@ -30,6 +30,7 @@ class AnexosController extends Controller {
         $this->dataTable = $dataTable;
     }
 
+
     public function index(Request $request) {
         
         $this->model->setAttributes($request->all());

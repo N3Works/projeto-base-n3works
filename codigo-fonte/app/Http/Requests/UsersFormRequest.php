@@ -61,6 +61,7 @@ class UsersFormRequest extends FormRequest
             'nome.required' => 'O campo Nome não foi preenchido.',
             'email.required' => 'O campo E-mail não foi preenchido.',
             'perfil_id.required' => 'O campo Perfil não foi preenchido.',
+            'password.required' => 'O campo Senha não foi preenchido.',
             
             //Validações extras
             'cpf.formato_invalido_cpf' => 'O campo CPF está com a formatação inválida.',

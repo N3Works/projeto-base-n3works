@@ -9,7 +9,7 @@ use App\Http\Requests\PerfisFormRequest;
 use App\DataTables\PerfisDataTable as DataTable;
 
 //Modelo da controller
-use App\Models\Perfis;
+use App\Repositories\PerfisRepository;
 
 //Classes de regra de negócio
 use App\Models\Permissoes;
@@ -26,7 +26,7 @@ class PerfisController extends Controller {
     /**
      * @var Perfis
      */
-    protected $model;
+    protected $repository;
     
     /**
      * @var DataTable
@@ -42,8 +42,8 @@ class PerfisController extends Controller {
      * PerfisController constructor.
      * @param Perfis $perfis
      */
-    public function __construct(Perfis $perfis, DataTable $dataTable, PermissoesDataTable $dataTablePermissoes) {
-        $this->model = $perfis;
+    public function __construct(PerfisRepository $repository, DataTable $dataTable, PermissoesDataTable $dataTablePermissoes) {
+        $this->repository = $repository;
         $this->dataTable = $dataTable;
         $this->permissoesDataTable = $dataTablePermissoes;
     }
@@ -55,15 +55,15 @@ class PerfisController extends Controller {
      */
     public function index(Request $request) {
         $this->authorize('PERFIS_LISTAR', 'PermissaoPolicy');
-        $this->model->fill($request->all());
+        $this->repository->fill($request->all());
         
         if (app('request')->isXmlHttpRequest()) {
-            $this->dataTable->model = $this->model;
+            $this->dataTable->model = $this->repository;
             return $this->dataTable->ajax();
         }
         
         return view('perfis.index', array(
-            'model' => $this->model->get(),
+            'model' => $this->repository->get(),
             'dataTable' => $this->dataTable->html(),
         ));
     }
@@ -74,8 +74,8 @@ class PerfisController extends Controller {
      * @return json
      */
     public function consultar(Request $request) {
-        $this->model->fill($request->all());
-        return $this->model->consultarDataTables();
+        $this->repository->fill($request->all());
+        return $this->repository->consultarDataTables();
     }
     
     /**
@@ -84,14 +84,13 @@ class PerfisController extends Controller {
      */
     public function form(Request $request) {
         $id = $request->route('id');
-        $this->model->setAttributes($request->all());
+        $this->repository->fill($request->all());
         
-        $model = $this->model;
+        $model = $this->repository;
         
         if ($id) {
             $this->authorize('PERFIS_EDITAR', 'PermissaoPolicy');
-            $model = $this->model->find($id);
-            $model->formatAttributes('get');
+            $model = $this->repository->buscarPorID($id);
 
             if (!$model) {
                 $this->setMessage('O Perfil não foi encontrado', 'danger');
@@ -112,22 +111,16 @@ class PerfisController extends Controller {
      * @return Response
      */
     public function save(PerfisFormRequest $request) {
-        $this->model->fill($request->all());
-        
-        if (!empty($this->model->id)) {
-            $alterar = $this->model->find($this->model->id);
-            
-            if (empty($alterar) || is_null($alterar)) {
-                $this->setMessage('O Perfil a ser alterado não existe no banco de dados!', 'danger');    
-            } else {
+        if (!empty($request->get('id'))) {
+            if ($this->repository->atualizar($request->get('id'), $request->all())) {
                 $this->setMessage('O Perfil foi alterado com sucesso!', 'success');    
-                $alterar->update($this->model->toArray());
+            } else {
+                $this->setMessage('O Perfil a ser alterado não existe no banco de dados!', 'danger');
             }
         } else {
-            $this->model->create($this->model->toArray());
+            $this->repository->cadastrar($request->all());
             $this->setMessage('O Perfil foi salvo com sucesso!', 'success');
         }
-        
         return redirect(url('perfis/index'));
     }
 
@@ -139,7 +132,7 @@ class PerfisController extends Controller {
     public function show($id) {
         $this->authorize('PERFIS_DETALHAR', 'PermissaoPolicy');
 
-        $model = Perfis::find($id);
+        $model = $this->repository->buscarPorID($id);
         
         if (!$model) {
             $this->setMessage('O Perfil não foi encontrado', 'danger');
@@ -161,13 +154,13 @@ class PerfisController extends Controller {
      * @return Response::json
      */
     public function destroy($id) {
-        $model = $this->model->find($id);
-
-        $model->findOrFail($id)->delete();
-        
+        $msg = 'O perfil foi excluido com sucesso!';
+        if (!$this->repository->deletar($id)) {
+            $msg = 'Falha ao excluir o perfil';
+        }
         return Response::json(array(
             'success' => true,
-            'msg' => 'O Perfil foi excluido com sucesso!',
+            'msg' => $msg,
         ));
     }
     
@@ -176,7 +169,7 @@ class PerfisController extends Controller {
      * @return type
      */
     public function listarPermissoes(Request $request) {
-        $permissoes = new Permissoes();
+        $permissoes = new \App\Repositories\PermissoesRepository();
         $data = $request->all();
         $permissoes->fill($data);
        

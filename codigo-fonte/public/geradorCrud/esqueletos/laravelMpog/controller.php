@@ -9,8 +9,8 @@ use App\DataTables\<?php echo $nomeTabelaModel; ?>DataTable as DataTable;
 use Illuminate\Http\Request;
 use Response;
 
-//Modelo da controller
-use App\Models\<?php echo $nomeTabelaModel; ?>; 
+//Repository->model da controller
+use App\Repositories\<?php echo $nomeTabelaModel; ?>Repository; 
 
 /**
  * Controlador <?php echo $this->dados_modelo['tabela']['nome_singular'].PHP_EOL; ?>
@@ -22,7 +22,7 @@ class <?php echo $nomeTabelaModel; ?>Controller extends Controller {
     /**
      * @var Model <?php echo $nomeTabelaModel.PHP_EOL; ?>
      */
-    protected $model;
+    protected $repository;
     
     /**
      * @var DataTable
@@ -33,8 +33,8 @@ class <?php echo $nomeTabelaModel; ?>Controller extends Controller {
      * <?php echo $nomeTabelaModel; ?>Controller constructor.
      * @param <?php echo $nomeTabelaModel; ?> $<?php echo $this->nome_tabela.PHP_EOL; ?>
      */
-    public function __construct(<?php echo $nomeTabelaModel; ?> $<?php echo $this->nome_tabela; ?>, DataTable $dataTable) {
-        $this->model = $<?php echo $this->nome_tabela; ?>;
+    public function __construct(<?php echo $nomeTabelaModel; ?>Repository $<?php echo $this->nome_tabela; ?>, DataTable $dataTable) {
+        $this->repository = $<?php echo $this->nome_tabela; ?>;
         $this->dataTable = $dataTable;
     }
     
@@ -45,15 +45,15 @@ class <?php echo $nomeTabelaModel; ?>Controller extends Controller {
      */
     public function index(Request $request) {
         $this->authorize('<?php echo strtoupper($this->nome_tabela); ?>_LISTAR', 'PermissaoPolicy');
-        $this->model->fill($request->all());
-        $this->dataTable->model = $this->model;
+        $this->repository->fill($request->all());
+        $this->dataTable->model = $this->repository;
         
         if (app('request')->isXmlHttpRequest()) {
             return $this->dataTable->ajax();
         }
         
         return view('<?php echo $this->nome_tabela; ?>.index', array(
-            'model' => $this->model,
+            'model' => $this->repository,
             'dataTable' => $this->dataTable->html(),
         ));
     }
@@ -64,8 +64,8 @@ class <?php echo $nomeTabelaModel; ?>Controller extends Controller {
      * @return json
      */
     public function consultar(Request $request) {
-        $this->model->fill($request->all());
-        return $this->model->consultarDataTables();
+        $this->repository->fill($request->all());
+        return $this->repository->consultarDataTables();
     }
         
     /**
@@ -74,17 +74,16 @@ class <?php echo $nomeTabelaModel; ?>Controller extends Controller {
      */    
     public function form(Request $request) {
         $id = $request->route('id');
-        $this->model->setAttributes($request->all()); 
-        $model = $this->model;
+        $this->repository->fill($request->all()); 
+        $model = $this->repository;
         
         if ($id) {
             $this->authorize('<?php echo strtoupper($this->nome_tabela); ?>_EDITAR', 'PermissaoPolicy');
-            $model = $this->model->find($id);
-            $model->formatAttributes('get');
+            $model = $this->repository->buscarPorID($id);
         
             if (!$model) {
                 $this->setMessage('<?php $this->chamaGeneroMsg('O', 'A'); ?> <?php echo $this->dados_modelo['tabela']['nome_singular']; ?> não foi encontrad<?php $this->chamaGeneroMsg(); ?>', 'danger');
-                return redirect(url('<?php echo $nomeTabelaModel; ?>/index'));
+                return redirect(url('<?php echo strtolower($nomeTabelaModel); ?>/index'));
             }
         } else {
             $this->authorize('<?php echo strtoupper($this->nome_tabela); ?>_CADASTRAR', 'PermissaoPolicy');
@@ -96,42 +95,23 @@ class <?php echo $nomeTabelaModel; ?>Controller extends Controller {
     }
     
     /**
-     * Salva <?php $this->chamaGeneroMsg(); ?> <?php echo $this->dados_modelo['tabela']['nome_singular']; ?>
+     * Salva <?php $this->chamaGeneroMsg(); ?> <?php echo $this->dados_modelo['tabela']['nome_singular'].PHP_EOL; ?>
      * @param $request ajusta os dados que vem do formulário
      * @return Response
      */
     public function save(<?php echo $nomeTabelaModel; ?>FormRequest $request) {
-        $this->model->fill($request->all());
-        
-<?php foreach ($this->dados_modelo['tabela']['dados'] as $coluna) { ?>
-<?php if ($coluna['tipo_coluna'] == 'date') { ?>
-        $this->model-><?php echo $coluna['nome_coluna']; ?> = !$this->model-><?php echo $coluna['nome_coluna']; ?> ? null : \App\Http\Helper\Formatar::dateBrToAll($this->model-><?php echo $coluna['nome_coluna']; ?>, 'DB');
-<?php } ?>
-<?php if ($coluna['tipo_coluna'] == 'datetime') { ?>
-        $this->model-><?php echo $coluna['nome_coluna']; ?> = !$this->model-><?php echo $coluna['nome_coluna']; ?> ? null : \App\Http\Helper\Formatar::dateBrToAll($this->model-><?php echo $coluna['nome_coluna']; ?>, 'DB', true, true);
-<?php } ?>
-<?php if ($coluna['tipo_input'] == 'porcentual') { ?>
-        if ($this->model-><?php echo $coluna['nome_coluna']; ?>) {
-            $this->model-><?php echo $coluna['nome_coluna']; ?> = str_replace('%', '', \App\Http\Helper\Formatar::number($this->model-><?php echo $coluna['nome_coluna']; ?>, 'DB', 2));
-        }
-<?php } ?>
-<?php } ?>
-        
-        if (!empty($this->model->id)) {
-            $alterar = $this->model->find($this->model->id);
-    
-            if (empty($alterar) || is_null($alterar)) {
-                $this->setMessage('<?php $this->chamaGeneroMsg('O', 'A'); ?> <?php echo $this->dados_modelo['tabela']['nome_singular']; ?> a ser alterad<?php $this->chamaGeneroMsg(); ?> não existe no banco de dados!', 'danger');    
-            } else {
+        if (!empty($request->get('id'))) {
+            if ($this->repository->atualizar($request->get('id'), $request->all())) {
                 $this->setMessage('<?php $this->chamaGeneroMsg('O', 'A'); ?> <?php echo $this->dados_modelo['tabela']['nome_singular']; ?> foi alterad<?php $this->chamaGeneroMsg(); ?> com sucesso!', 'success');    
-                $alterar->update($this->model->toArray());
+            } else {
+                $this->setMessage('<?php $this->chamaGeneroMsg('O', 'A'); ?> <?php echo $this->dados_modelo['tabela']['nome_singular']; ?> a ser alterad<?php $this->chamaGeneroMsg(); ?> não existe no banco de dados!', 'danger');
             }
         } else {
-            $this->model->create($this->model->toArray());
+            $this->repository->cadastrar($request->all());
             $this->setMessage('<?php $this->chamaGeneroMsg('O', 'A'); ?> <?php echo $this->dados_modelo['tabela']['nome_singular']; ?> foi salv<?php $this->chamaGeneroMsg(); ?> com sucesso!', 'success');
         }
         
-        return redirect(url('<?php echo $nomeTabelaModel; ?>/index'));
+        return redirect(url('<?php echo strtolower($nomeTabelaModel); ?>/index'));
     }
     
     /**
@@ -141,11 +121,11 @@ class <?php echo $nomeTabelaModel; ?>Controller extends Controller {
      */
     public function show($id) {
         $this->authorize('<?php echo strtoupper($this->nome_tabela); ?>_DETALHAR', 'PermissaoPolicy');
-        $model = $this->model->find($id);
+        $model = $this->repository->find($id);
         
         if (!$model) {
             $this->setMessage('<?php $this->chamaGeneroMsg('O', 'A'); ?> <?php echo $this->dados_modelo['tabela']['nome_singular']; ?> não foi encontrad<?php $this->chamaGeneroMsg(); ?>', 'danger');
-            return redirect(url('<?php echo $nomeTabelaModel; ?>/index'));
+            return redirect(url('<?php echo strtolower($nomeTabelaModel); ?>/index'));
         }
         
         return view('<?php echo $this->nome_tabela; ?>.show', [
@@ -160,13 +140,13 @@ class <?php echo $nomeTabelaModel; ?>Controller extends Controller {
      * @return Response::json
      */
     public function destroy($id) {
-        $model = $this->model->find($id);
-
-        $model->findOrFail($id)->delete();
-        
+        $msg = '<?php echo $this->chamaGeneroMsg('O', 'A'); ?> <?php echo $this->dados_modelo['tabela']['nome_singular']; ?> foi excluido com sucesso!';
+        if (!$this->repository->deletar($id)) {
+            $msg = 'Falha ao excluir <?php echo $this->chamaGeneroMsg(); ?> <?php echo $this->dados_modelo['tabela']['nome_singular']; ?>';
+        }
         return Response::json(array(
             'success' => true,
-            'msg' => '<?php $this->chamaGeneroMsg('O', 'A'); ?> <?php echo $this->dados_modelo['tabela']['nome_singular']; ?> foi excluido com sucesso!',
+            'msg' => $msg,
         ));
     }
 }

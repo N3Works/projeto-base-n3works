@@ -10,7 +10,7 @@ use App\DataTables\UsersDataTable as DataTable;
 use Response;
 
 //Modelo da controller
-use App\User;
+use App\Repositories\UsersRepository;
 
 /**
  * Controlador dos Usuários
@@ -21,7 +21,7 @@ class UsersController extends Controller {
     /**
      * @var Users
      */
-    protected $model;
+    protected $repository;
     
     /**
      * @var DataTable
@@ -32,8 +32,8 @@ class UsersController extends Controller {
      * UsersController constructor.
      * @param Users $users
      */
-    public function __construct(User $users, DataTable $dataTable) {
-        $this->model = $users;
+    public function __construct(UsersRepository $repository, DataTable $dataTable) {
+        $this->repository = $repository;
         $this->dataTable = $dataTable;
     }
     
@@ -45,16 +45,16 @@ class UsersController extends Controller {
     public function index(Request $request) {
         $this->authorize('USERS_LISTAR', 'PermissaoPolicy');
         
-        $this->model->fill($request->all());
+        $this->repository->fill($request->all());
         
         if (app('request')->isXmlHttpRequest()) {
-            $this->dataTable->model = $this->model;
+            $this->dataTable->model = $this->repository;
             return $this->dataTable->ajax();
         }
         
         return view('users.index', array(
             'perfis' => \App\Models\Perfis::pluck('nome', 'id'),
-            'model' => $this->model->get(),
+            'model' => $this->repository->get(),
             'dataTable' => $this->dataTable->html(),
         ));
     }
@@ -65,8 +65,8 @@ class UsersController extends Controller {
      * @return json
      */
     public function consultar(Request $request) {
-        $this->model->fill($request->all());
-        return $this->model->consultarDataTables();
+        $this->repository->fill($request->all());
+        return $this->repository->consultarDataTables();
     }
     
     /**
@@ -76,12 +76,12 @@ class UsersController extends Controller {
     public function form(Request $request) {
         
         $id = $request->route('id');
-        $this->model->fill($request->all());
+        $this->repository->fill($request->all());
         
-        $model = $this->model;
+        $model = $this->repository;
         if ($id) {
             $this->authorize('USERS_EDITAR', 'PermissaoPolicy');
-            $model = $this->model->find($id);
+            $model = $this->repository->buscarPorID($id);
             $model->cenario = 'editar';
 
             if (!$model) {
@@ -104,26 +104,16 @@ class UsersController extends Controller {
      * @return Response
      */
     public function save(UsersFormRequest $request) {
-        $this->model->fill($request->all());
-        
-        unset($this->model->cenario);
-        
-        if (!empty($this->model->id)) {
-            $alterar = $this->model->find($this->model->id);
-            
-            if (empty($alterar) || is_null($alterar)) {
-                $this->setMessage('O Usuário a ser alterado não existe no banco de dados!', 'danger');    
-            } else {
+        if (!empty($request->get('id'))) {
+            if ($this->repository->atualizar($request->get('id'), $request->all())) {
                 $this->setMessage('O Usuário foi alterado com sucesso!', 'success'); 
-                $this->model->password = md5($this->model->password);
-                $alterar->update($this->model->toArray());
+            } else {
+                $this->setMessage('O Usuário a ser alterado não existe no banco de dados!', 'danger');
             }
         } else {
-            $this->model->password = md5($this->model->password);
-            $this->model->create($this->model->toArray());
+            $this->repository->cadastrar($request->all());
             $this->setMessage('O Usuário foi salvo com sucesso!', 'success');
         }
-        
         return redirect(url('users/index'));
     }
 
@@ -138,7 +128,7 @@ class UsersController extends Controller {
             $this->authorize('USERS_DETALHAR', 'PermissaoPolicy');
         }
         
-        $model = User::find($id);
+        $model = $this->repository->buscarPorID($id);
         
         if (!$model) {
             $this->setMessage('O Usuário não foi encontrado', 'danger');
@@ -156,13 +146,13 @@ class UsersController extends Controller {
      * @return Response::json
      */
     public function destroy($id) {
-        $model = $this->model->find($id);
-
-        $model->findOrFail($id)->delete();
-        
+        $msg = 'O usuário foi excluido com sucesso!';
+        if (!$this->repository->deletar($id)) {
+            $msg = 'Falha ao excluir o usuário';
+        }
         return Response::json(array(
             'success' => true,
-            'msg' => 'O Usuário foi excluido com sucesso!',
+            'msg' => $msg,
         ));
     }
     
@@ -176,7 +166,7 @@ class UsersController extends Controller {
         $status = true;
         $message = 'O perfil do usuário foi alterado com sucesso!';
         
-        if (!$this->model->find($data['user_id'])->update(['perfil_id' => $data['perfil_id']])) {
+        if (!$this->repository->atualizar($data['user_id'], ['perfil_id' => $data['perfil_id']])) {
             $status = false;
             $message = 'Houve um problema ao alterar o perfil';
         }
@@ -193,23 +183,23 @@ class UsersController extends Controller {
      */
     public function trocarSenha(Request $request) {
         $dados = $request->all();
-        $id_user = $request->route('id');
+        $id = $request->route('id');
         
-        if ($id_user != \Auth::user()->id) {
+        if ($id != \Auth::user()->id) {
             $this->authorize('USERS_TROCAR_SENHA', 'PermissaoPolicy');
         }
 
-        if (!$id_user) {
+        if (!$id) {
             $this->setMessage('Não foi passado nenhum identificador do usuário.', 'danger');
             return redirect(url('/'));
         }
         
-        $model = $this->model->find($id_user);
+        $model = $this->repository->buscarPorID($id);
+        /* @var $model User */
+        
         $model->cenario = 'senha';
         if (!empty($dados)) {
-            $model->fill($dados);
-            
-            $retorno = $model->trocarSenha();
+            $retorno = $model->trocarSenha($dados);
             $this->setMessage($retorno['mensagem'], $retorno['tipo']);
             if ($retorno['tipo'] == 'success') {
                 return redirect(url('/'));
@@ -228,14 +218,12 @@ class UsersController extends Controller {
         $email = '';
         
         if (!empty($dados)) {
-            $model = $this->model->fill($dados);
-            
-            $retorno = $model->recuperarSenha();
+            $retorno = $this->repository->recuperarSenha($dados);
             $this->setMessage($retorno['mensagem'], $retorno['tipo']);
             if ($retorno['tipo'] == 'success') {
                 return redirect(url('/login'));
             }
-            $email = $model->email;
+            $email = $this->repository->email;
         }
         
         return view('users.recuperar-senha', ['email' => $email]);

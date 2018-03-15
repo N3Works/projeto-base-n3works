@@ -25,7 +25,6 @@ class ModelControl extends Model {
     const INSERT = 'INSERT';
     const DELETE = 'DELETE';
 
-
     /**
      * Array Estática com valores da coluna de situação
      * @var array
@@ -43,68 +42,9 @@ class ModelControl extends Model {
         self::SIM => 'Sim',
         self::NAO => 'Não',
     ];
-
-    /**
-     * Seta todos os atributos do request
-     * @param array $request
-     */
-    public function setAttributes($request) {
-        foreach ($request as $campo => $valor) {
-            if (in_array($campo, $this->fillable)) { //Busca o search da tabela que chama a ModelControl
-                $this->setAttribute($campo, $valor);
-            }
-        }
-    }
-
-    /**
-     * Formata os atributos conforme casts, e metodo setado get ou save
-     * @param string $metodo get, save.
-     */
-    public function formatAttributes($metodo) {
-
-        if ($metodo == 'get') {
-            foreach ($this->casts as $attribute => $type) {
-
-                if (empty($this->$attribute)) {
-                    continue;
-                }
-
-                if ($type == 'data') {
-                    $this->$attribute = Formatar::dateDbToAll($this->$attribute);
-                }
-
-                if ($type == 'dinheiro') {
-                    $this->$attribute = Formatar::number($this->$attribute, 'BR');
-                }
-            }
-        }
-
-        if ($metodo == 'save') {
-            foreach ($this->casts as $attribute => $type) {
-
-                if ($attribute == 'created_at' || $attribute == 'updated_at') {
-                    continue;
-                }
-
-                if (empty($this->$attribute)) {
-                    $this->$attribute = null;
-                    continue;
-                }
-
-                if ($type == 'data') {
-                    $this->$attribute = Formatar::dateBrToAll($this->$attribute, 'DB');
-                }
-
-                if ($type == 'dinheiro' || $type == 'money') {
-                    $this->$attribute = Formatar::number($this->$attribute, 'DB');
-                }
-            }
-        }
-    }
-
-    /** Executa sempre que alguma manipulação de dados existir gerando um registro novo na table de logs */
-    public static function boot()
-    {
+    
+    /* Executa sempre que alguma manipulação de dados existir gerando um registro novo na table de logs */
+    public static function boot() {
         static::creating(function ($model) {
             $usuario_id = !\Auth::guest() ? \Auth::user()->id : null;
             $usuario_nome = !\Auth::guest() ? \Auth::user()->nome : null;

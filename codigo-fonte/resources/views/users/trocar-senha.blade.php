@@ -35,7 +35,7 @@ echo LayoutBuilder::gerarBreadCrumb([
             
             <div class="portlet-body form">
                 {{ Form::open(['id' => 'model_form', 'method' => 'post', 'url' => 'users/trocarSenha/'.$model->id, 'class' => 'form-horizontal']) }}
-                    
+                
                     {{ Form::text('id', $model->id, ['style' => 'display: none;', 'data-required' => 1, 'aria-required' => 'true', 'class' => 'form-control id_user']) }}
                     {{ Form::text('cenario', $model->cenario, ['style' => 'display: none;', 'data-required' => 1, 'aria-required' => 'true', 'class' => 'form-control cenario']) }}
                     

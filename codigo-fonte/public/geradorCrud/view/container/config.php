@@ -12,7 +12,7 @@
                 }
                 ?>
             </select>
-            <a style="display: none;" href="javascript:void(0)" class="ajustarLabels"><button type="button" class="btn btn-primary ">Ajustar Labels</button></a>
+            <a style="display: none;" href="javascript:void(0)" class="ajustarLabels"><button type="button" class="btn btn-primary ">Ajustar Colunas</button></a>
         </div>
 
         <div class="form-group">

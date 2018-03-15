@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => 'adesaotermo@gmail.com',
-        'name' => 'Termo Adesão',
+        'address' => 'thiago.farias@jointecnologia.com',
+        'name' => 'Join Tecnologia - Thiago',
     ],
 
     /*
@@ -84,7 +84,7 @@ return [
     |
     */
 
-    'username' => 'adesaotermo@gmail.com',
+    'username' => 'thiago.farias@jointecnologia.com',
 
     /*
     |--------------------------------------------------------------------------
@@ -97,7 +97,7 @@ return [
     |
     */
 
-    'password' => 'termoadesao',
+    'password' => 'tfdk0071',
 
     /*
     |--------------------------------------------------------------------------

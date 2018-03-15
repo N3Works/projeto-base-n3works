@@ -20,10 +20,7 @@ class RouteBuilder {
         $actionController = ucfirst($dataUrl['CONTROLLER']).'Controller@'.$dataUrl['ACTION'];
         
         if (empty($dataUrl['CONTROLLER']) && empty($dataUrl['ACTION'])) {
-            Route::get('/', 'DefaultController@index');
             $_SESSION['ACTION'] = 'index'; $_SESSION['CONTROLLER'] = 'default'; //Seta session
-        } else {
-            Route::resource($routeUrl, $actionController);
         }
     }
     

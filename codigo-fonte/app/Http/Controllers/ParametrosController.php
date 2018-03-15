@@ -10,7 +10,7 @@ use App\Http\Requests\ParametrosFormRequest;
 use App\DataTables\ParametrosDataTable as DataTable;
 
 //Modelo da controller
-use App\Models\Parametros; 
+use App\Repositories\ParametrosRepository; 
 use Laracasts\Utilities\JavaScript\JavaScriptFacade as Javascript;
 
 use Response;
@@ -24,7 +24,7 @@ class ParametrosController extends Controller {
     /**
      * @var Parametros
      */
-    protected $model;
+    protected $repository;
     
     /**
      * @var DataTable
@@ -35,8 +35,8 @@ class ParametrosController extends Controller {
      * ParametrosController constructor.
      * @param Parametros $parametros
      */
-    public function __construct(Parametros $parametros, DataTable $dataTable) {
-        $this->model = $parametros;
+    public function __construct(ParametrosRepository $repository, DataTable $dataTable) {
+        $this->repository = $repository;
         $this->dataTable = $dataTable;
     }
     
@@ -47,15 +47,15 @@ class ParametrosController extends Controller {
      */
     public function index(Request $request) {
         $this->authorize('PARAMETROS_LISTAR', 'PermissaoPolicy');
-        $this->model->setAttributes($request->all());
+        $this->repository->fill($request->all());
         
         if (app('request')->isXmlHttpRequest()) {
-            $this->dataTable->model = $this->model;
+            $this->dataTable->model = $this->repository;
             return $this->dataTable->ajax();
         }
         
         return view('parametros.index', array(
-            'model' => $this->model->get(),
+            'model' => $this->repository->get(),
             'dataTable' => $this->dataTable->html(),
         ));
     }
@@ -66,8 +66,8 @@ class ParametrosController extends Controller {
      * @return json
      */
     public function consultar(Request $request) {
-        $this->model->setAttributes($request->all());
-        return $this->model->consultarDataTables();
+        $this->repository->fill($request->all());
+        return $this->repository->consultarDataTables();
     }
     
     /**
@@ -76,14 +76,14 @@ class ParametrosController extends Controller {
      */
     public function form(Request $request) {
         $id = $request->route('id');
-        $this->model->fill($request->all());
-        $model = $this->model;
+        $this->repository->fill($request->all());
+        $model = $this->repository;
         
         $dadosFormulario = $request->session()->has('_old_input') ? $request->session()->get('_old_input') : [];
         
         if ($id) {
             $this->authorize('PARAMETROS_EDITAR', 'PermissaoPolicy');
-            $model = $this->model->find($id);
+            $model = $this->repository->buscarPorID($id);
             $model->formatAttributes('get');
 
             if (!$model) {
@@ -130,16 +130,11 @@ class ParametrosController extends Controller {
      * @return Response
      */
     public function save(ParametrosFormRequest $request) {
-        $this->model->setAttributes($request->all());
-        $this->model->formatAttributes('save');
-        
-        $return = $this->model->salvar();
+        $return = $this->repository->salvar($request->all());
         $this->setMessage($return['msg'], $return['status']);
-        
         if ($return['status'] == 'danger') {
             return \Illuminate\Support\Facades\Redirect::back()->withInput();
         }
-        
         return redirect(url('parametros/index'));
     }
 
@@ -150,17 +145,16 @@ class ParametrosController extends Controller {
      */
     public function show($id) {
         $this->authorize('PARAMETROS_DETALHAR', 'PermissaoPolicy');
-        $model = Parametros::find($id);
-        $model->formatAttributes('get');
+        $model = $this->repository->buscarPorID($id);
         
         if (!$model) {
             $this->setMessage('O Parametro não foi encontrado', 'danger');
             return redirect(url('parametros/index'));
         }
         
-        $model->buscarValorPorTipo();
+        $this->repository->buscarValorPorTipo($model);
         
-        return view('parametros.show', ['model' => $model]);
+        return view('parametros.show', ['model' => $this->repository]);
     }
 
     /**
@@ -169,13 +163,13 @@ class ParametrosController extends Controller {
      * @return Response::json
      */
     public function destroy($id) {
-        $model = $this->model->find($id);
+        $model = $this->repository->buscarPorID($id);
 
         if ($model->tipo == $model::TIPO_DROPDOWN || $model->tipo == $model::TIPO_BOOLEAN) {
             \App\Models\ParametroValoresTipos::where('parametro_id', $id)->delete();
         }
         
-        $model->findOrFail($id)->delete();
+        $model->delete();
         
         return Response::json(array(
             'success' => true,
@@ -189,7 +183,7 @@ class ParametrosController extends Controller {
      */
     public function configurar() {
         $this->authorize('PARAMETROS_LISTAR', 'PermissaoPolicy');
-        return view('parametros.configurar', ['model' => $this->model]);
+        return view('parametros.configurar', ['model' => $this->repository]);
     }
     
     /**
@@ -201,7 +195,7 @@ class ParametrosController extends Controller {
         $status = 'success';
         $msg = 'Parâmetro alterado com sucesso.';
         
-        if (!$this->model->find($dados['id'])->update(['valor' => $dados['valor']])) {
+        if (!$this->repository->atualizar($dados['id'], ['valor' => $dados['valor']])) {
             $status = 'danger';
             $msg = 'Erro ao editar a permissão.';
         }

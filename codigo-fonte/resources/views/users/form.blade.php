@@ -58,7 +58,7 @@ echo LayoutBuilder::gerarBreadCrumb(array(
                             <div class="form-group {{ $errors->has('perfil_id') ? 'has-error' : '' }}">
                                 <label class="col-md-3 control-label"><b>{{ $model->labels['perfil_id'] }}:</b><span class="request"> *</span></label>
                                 <div class="col-md-6">
-                                    {{ Form::select('perfil_id', $perfis, $model->perfil_id, ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control', 'placeholder' => 'Selecione']) }}
+                                    {{ Form::select('perfil_id', $perfis, $model->perfil_id, ['data-required' => 1,'aria-required' => 'true' ,'class' => 'form-control select2', 'placeholder' => 'Selecione']) }}
                                 </div>
                             </div>
                             

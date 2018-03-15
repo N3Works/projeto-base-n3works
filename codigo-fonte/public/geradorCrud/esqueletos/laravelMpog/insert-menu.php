@@ -13,7 +13,7 @@ class InsertMenu<?php echo $nomeTabelaModel; ?>Table extends Migration {
         DB::table('menus')->insert([
             [
                 'header' => '<?php echo $this->dados_modelo['tabela']['nome_singular']; ?>', 
-                'controller' => '<?php echo $nomeTabelaModel; ?>',
+                'controller' => '<?php echo strtolower($nomeTabelaModel); ?>',
                 'action' => 'index',
                 'icon' => '<?php echo (isset($this->dados['icone']) ? $this->dados['icone'] : 'cogs') ?>',
                 'parent' => '0',

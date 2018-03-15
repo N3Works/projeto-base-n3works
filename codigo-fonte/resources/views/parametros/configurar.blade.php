@@ -32,7 +32,7 @@ echo LayoutBuilder::gerarBreadCrumb(array(
                         <th>Valor</th>
                     </thead>
                     <tbody>
-                        @foreach ($model->get() as $parametro)
+                        @foreach ($model->buscarTodos() as $parametro)
                         <tr>
                             <td>{{ $parametro->nome }}</td>
                             <td>{{ $parametro->descricao }}</td>

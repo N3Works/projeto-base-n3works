@@ -40,7 +40,7 @@ class laravelMpog extends Modelo {
     
     public function gerarMenuMPOG() {
         list($nomeTabelaRender, $nomeTabelaModel) = $this->nomeTabela($this->nome_tabela);
-        $arquivo = date('Y_m_d').'_'.substr(time(), 3).'_insert_menu_'.$this->nome_tabela.'_table.php';
+        $arquivo = date('Y_m_d').'_'.substr(time(), 3).'0_insert_menu_'.$this->nome_tabela.'_table.php';
         $caminho = $this->montarCaminho('migration') .'/'. $arquivo;
                 
         $generoModel = $this->dados_modelo['tabela']['genero_entidade'];

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -27,7 +26,7 @@ class Controller extends BaseController {
      * @param boolean $callMessage Trata se já salva na sessão a mensagem
      */
     public function setMessage($message, $status = 'info', $callMessage = true) {
-        if (!empty(trim($message))) {            
+        if (!empty(trim($message))) {          
             if ($callMessage) {
                 flash($message, $status);
             }

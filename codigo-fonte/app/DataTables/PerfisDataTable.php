@@ -10,13 +10,14 @@ use App\Http\Helper\Formatar;
  */
 class PerfisDataTable extends DataTable {
     
+    public $model;
+    
     /**
      * Mostra a resposta em ajax
      * @return \Illuminate\Http\JsonResponse
      */
     public function ajax() {
-        $model = new Perfis();
-        return $this->datatables->of($model->consultar())
+        return $this->datatables->of($this->model->consultar())
             ->addColumn('acoes', function ($query) {
             return '<a  href="' . url('perfis/show/' . $query->id) . '"><button class="btn btn-default"><i class="fa fa-search"></i></button></a>
                 <a  href="' . url('perfis/form/' . $query->id) . '"><button class="btn btn-primary"><i class="fa fa-pencil"></i></button></a>

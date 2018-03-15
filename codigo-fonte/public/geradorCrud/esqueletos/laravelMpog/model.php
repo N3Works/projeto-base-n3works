@@ -90,47 +90,4 @@ class <?php echo $nomeTabelaModel; ?> extends ModelControl {
         return $this->belongsToMany('App\Models\<?php echo $relacao_referenciada['modelo']; ?>', '<?php echo $relacao_referenciada['tabela']; ?>', '<?php echo $relacao_referenciada['coluna_referencia']; ?>', '<?php echo $relacao_referenciada['coluna_referenciada']; ?>');
     }
 <?php } ?>
-    
-    /**
-     * Realiza a consulta da tabela
-     *
-     * @param array $filter
-     * @return \Illuminate\Support\Collection
-     */
-    public function consultar(array $filter = [], $expression = '*') {
-        
-        if(empty($filter)) {
-            $filter = $this->toArray();
-        }
-        
-        $builder = self::selectRaw($expression);
-
-<?php foreach ($this->dados_modelo['tabela']['dados'] as $coluna) { ?> 
-        
-<?php if (in_array($coluna['nome_coluna'], ['nome', 'name', 'descricao', 'detalhe', 'observacao', 'cpf', 'cnpj'])) { ?>
-        if($this-><?php print $coluna['nome_coluna']; ?>) {
-            $builder->where('<?php print $coluna['nome_coluna']; ?>', 'like', '%'.$this-><?php print $coluna['nome_coluna']; ?>.'%');
-        }
-<?php } else if($coluna['tipo_input'] == 'situacao') { ?>
-        if($this-><?php print $coluna['nome_coluna']; ?> != null) {
-            $builder->where('<?php print $coluna['nome_coluna']; ?>', $this-><?php print $coluna['nome_coluna']; ?>);
-        }
-<?php } else { ?>
-                    
-        if($this-><?php print $coluna['nome_coluna']; ?>) {
-<?php if ($coluna['tipo_coluna'] == 'date') { ?>
-                $this-><?php echo $coluna['nome_coluna']; ?> =  \App\Http\Helper\Formatar::dateBrToAll($this-><?php echo $coluna['nome_coluna']; ?>, 'DB');
-<?php } else if ($coluna['tipo_coluna'] == 'datetime') { ?>
-                $this-><?php echo $coluna['nome_coluna']; ?> =  \App\Http\Helper\Formatar::dateBrToAll($this-><?php echo $coluna['nome_coluna']; ?>, 'DB', true, true);
-<?php } ?>
-            $builder->where('<?php print $coluna['nome_coluna']; ?>', $this-><?php print $coluna['nome_coluna']; ?>);
-        }
-<?php } ?>
-        
-<?php } ?>        
-
-        $builder->orderBy('id', 'DESC');
-
-        return $builder->get();
-    }
 }
