@@ -10,7 +10,22 @@ use App\Models\<?php echo $nomeTabelaModel; ?>;
  * @version <?php echo date('d/m/Y').PHP_EOL; ?>
  */
 class <?php echo $nomeTabelaModel; ?>Repository extends <?php echo $nomeTabelaModel; ?> {
-    
+
+use RepositoryTraitEzequiel;
+<?php foreach ($this->dados_modelo['tabela']['dados'] as $coluna) {
+    $colunas = false;
+    if ($coluna['tipo_coluna'] == 'date') {
+        $colunas = true;
+    }
+    if ($coluna['tipo_coluna'] == 'datetime') {
+        $colunas = true;
+    }
+    if ($coluna['tipo_input'] == 'porcentual') {
+        $colunas = true;   
+    }
+} ?>
+
+<?php if ($colunas) { ?>
     /**
      * Busca por ID
      * @param integer $id
@@ -35,20 +50,9 @@ class <?php echo $nomeTabelaModel; ?>Repository extends <?php echo $nomeTabelaMo
         
         return $model;
     }
-
-    /**
-     * Deleta por ID
-     * @param integer $id
-     */
-    public function deletar($id) {
-        $model = $this->findOrFail($id);
-        if ($this->findOrFail($id)) {
-            $model->delete($id);
-            return true;
-        }
-        return false;
-    }
+<?php } ?>
     
+<?php if ($colunas) { ?>
     /**
      * Atualiza por ID
      * @param integer $id
@@ -56,22 +60,22 @@ class <?php echo $nomeTabelaModel; ?>Repository extends <?php echo $nomeTabelaMo
      */
     public function atualizar($id, $data = []) {
         $model = $this->findOrFail($id);
-        if ($this->findOrFail($id)) {
+        if ($model) {
             if (count($data)) {
                 $model->fill($data);
             }
             
 <?php foreach ($this->dados_modelo['tabela']['dados'] as $coluna) { ?>
 <?php if ($coluna['tipo_coluna'] == 'date') { ?>
-        $model-><?php echo $coluna['nome_coluna']; ?> = !$model-><?php echo $coluna['nome_coluna']; ?> ? null : \App\Http\Helper\Formatar::dateBrToAll($model-><?php echo $coluna['nome_coluna']; ?>, 'DB');
+            $model-><?php echo $coluna['nome_coluna']; ?> = !$model-><?php echo $coluna['nome_coluna']; ?> ? null : \App\Http\Helper\Formatar::dateBrToAll($model-><?php echo $coluna['nome_coluna']; ?>, 'DB');
 <?php } ?>
 <?php if ($coluna['tipo_coluna'] == 'datetime') { ?>
-        $model-><?php echo $coluna['nome_coluna']; ?> = !$model-><?php echo $coluna['nome_coluna']; ?> ? null : \App\Http\Helper\Formatar::dateBrToAll($model-><?php echo $coluna['nome_coluna']; ?>, 'DB', true, true);
+            $model-><?php echo $coluna['nome_coluna']; ?> = !$model-><?php echo $coluna['nome_coluna']; ?> ? null : \App\Http\Helper\Formatar::dateBrToAll($model-><?php echo $coluna['nome_coluna']; ?>, 'DB', true, true);
 <?php } ?>
 <?php if ($coluna['tipo_input'] == 'porcentual') { ?>
-        if ($model-><?php echo $coluna['nome_coluna']; ?>) {
-            $model-><?php echo $coluna['nome_coluna']; ?> = str_replace('%', '', \App\Http\Helper\Formatar::number($model-><?php echo $coluna['nome_coluna']; ?>, 'DB', 2));
-        }
+            if ($model-><?php echo $coluna['nome_coluna']; ?>) {
+                $model-><?php echo $coluna['nome_coluna']; ?> = str_replace('%', '', \App\Http\Helper\Formatar::number($model-><?php echo $coluna['nome_coluna']; ?>, 'DB', 2));
+            }
 <?php } ?>
 <?php } ?>
         
@@ -80,7 +84,9 @@ class <?php echo $nomeTabelaModel; ?>Repository extends <?php echo $nomeTabelaMo
         }
         return false;
     }
-    
+<?php } ?>
+
+<?php if ($colunas) { ?>
     /**
      * Cadastro/Registrar na tabela
      * @param array $data
@@ -107,6 +113,7 @@ class <?php echo $nomeTabelaModel; ?>Repository extends <?php echo $nomeTabelaMo
         
         return $this->insertGetId($this->toArray());
     }
+<?php } ?>
 
     /**
      * Realiza a consulta da tabela
@@ -122,8 +129,7 @@ class <?php echo $nomeTabelaModel; ?>Repository extends <?php echo $nomeTabelaMo
         
         $builder = self::selectRaw($expression);
 
-<?php foreach ($this->dados_modelo['tabela']['dados'] as $coluna) { ?> 
-        
+<?php foreach ($this->dados_modelo['tabela']['dados'] as $coluna) { ?>
 <?php if (in_array($coluna['nome_coluna'], ['nome', 'name', 'descricao', 'detalhe', 'observacao', 'cpf', 'cnpj'])) { ?>
         if($this-><?php print $coluna['nome_coluna']; ?>) {
             $builder->where('<?php print $coluna['nome_coluna']; ?>', 'like', '%'.$this-><?php print $coluna['nome_coluna']; ?>.'%');
@@ -133,12 +139,12 @@ class <?php echo $nomeTabelaModel; ?>Repository extends <?php echo $nomeTabelaMo
             $builder->where('<?php print $coluna['nome_coluna']; ?>', $this-><?php print $coluna['nome_coluna']; ?>);
         }
 <?php } else { ?>
-                    
+
         if($this-><?php print $coluna['nome_coluna']; ?>) {
 <?php if ($coluna['tipo_coluna'] == 'date') { ?>
-                $this-><?php echo $coluna['nome_coluna']; ?> =  \App\Http\Helper\Formatar::dateBrToAll($this-><?php echo $coluna['nome_coluna']; ?>, 'DB');
+            $this-><?php echo $coluna['nome_coluna']; ?> =  \App\Http\Helper\Formatar::dateBrToAll($this-><?php echo $coluna['nome_coluna']; ?>, 'DB');
 <?php } else if ($coluna['tipo_coluna'] == 'datetime') { ?>
-                $this-><?php echo $coluna['nome_coluna']; ?> =  \App\Http\Helper\Formatar::dateBrToAll($this-><?php echo $coluna['nome_coluna']; ?>, 'DB', true, true);
+            $this-><?php echo $coluna['nome_coluna']; ?> =  \App\Http\Helper\Formatar::dateBrToAll($this-><?php echo $coluna['nome_coluna']; ?>, 'DB', true, true);
 <?php } ?>
             $builder->where('<?php print $coluna['nome_coluna']; ?>', $this-><?php print $coluna['nome_coluna']; ?>);
         }

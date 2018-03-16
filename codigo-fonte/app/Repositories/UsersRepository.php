@@ -8,30 +8,7 @@ use App\User;
  */
 class UsersRepository extends User {
     
-    /**
-     * Busca por ID
-     * @param integer $id
-     */
-    public function buscarPorID($id) {
-        $model = $this->findOrFail($id);
-        if (!$model) {
-            return false;
-        }
-        return $model;
-    }
-
-    /**
-     * Deleta por ID
-     * @param integer $id
-     */
-    public function deletar($id) {
-        $model = $this->findOrFail($id);
-        if ($this->findOrFail($id)) {
-            $model->delete($id);
-            return true;
-        }
-        return false;
-    }
+    use RepositoryTraitEzequiel;
     
     /**
      * Atualiza por ID
@@ -40,7 +17,7 @@ class UsersRepository extends User {
      */
     public function atualizar($id, $data = []) {
         $model = $this->findOrFail($id);
-        if ($this->findOrFail($id)) {
+        if ($model) {
             if (count($data)) {
                 $model->fill($data);
             }
